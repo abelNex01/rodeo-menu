@@ -1,154 +1,189 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  ChevronLeft, 
-  MoreHorizontal, 
-  ChefHat, 
-  ClipboardList 
-} from "lucide-react";
+import { ChevronLeft, ShoppingBag, Heart, Bike, Target, Map, Minus, Plus, Star, Watch } from "lucide-react";
 
-// --- The Core Component ---
 const FoodDetails = ({ cart, setCart }) => {
   const navigate = useNavigate();
+  const [quantity, setQuantity] = useState(1);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [userRating, setUserRating] = useState(0);
 
   // Preserved User Logic
-  const handleAddToList = () => {
-    console.log("Adding to list from details");
+  const handleAddToCart = () => {
+    console.log("Adding to cart from details");
     const newItem = {
       cartId: Date.now(),
       id: 1, // Currently hardcoded
-      name: "Creamy Mustard Shallot Chicken",
-      price: 390,
-      img: "https://images.unsplash.com/photo-1598515320092-3c87f3b89083?w=800&fit=crop",
+      name: "Avocado Toast",
+      price: 45,
+      quantity: quantity,
+      img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&auto=format&fit=crop&q=60",
       time: "45 min"
     };
     setCart(prev => [...(prev || []), newItem]);
-    navigate("/orders");
   };
 
+  const handleBuyNow = () => {
+     handleAddToCart();
+     navigate("/orders");
+  }
+
+  const handleDecreaseQuantity = () => {
+     setQuantity(prev => Math.max(1, prev - 1));
+  }
+  
+  const handleIncreaseQuantity = () => {
+     setQuantity(prev => prev + 1);
+  }
+
   return (
-    <div className="w-full h-full relative font-sans overflow-x-hidden bg-white flex flex-col">
+    <div className="w-full h-full bg-white font-sans flex flex-col relative overflow-hidden">
       
       {/* Scrollable Content Container */}
-      <div className="flex-1 overflow-y-auto w-full pb-8 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth">
         
-        {/* Full-width large hero image area */}
-        <div className="relative w-full h-[55vh] overflow-hidden">
-          <img 
-            src="https://images.unsplash.com/photo-1598515320092-3c87f3b89083?w=800&fit=crop" 
-            alt="Creamy Mustard Shallot Chicken" 
-            className="w-full h-full object-cover"
-          />
-          
-          {/* Gradients matching the reference image */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40"></div>
-          
-          {/* Top Navigation Overlay */}
-          <div className="absolute top-12 w-full px-6 flex justify-between items-center z-20">
-            <button 
-              onClick={() => navigate(-1)}
-              className="w-10 h-10 bg-white/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white/30 transition-all active:scale-95 shadow-sm"
-            >
-              <ChevronLeft size={22} className="mr-0.5" />
-            </button>
-            <span className="text-white font-medium text-[15px] tracking-wide shadow-sm">
-              Nutritions
-            </span>
-            <button 
-              className="w-10 h-10 bg-white/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white/30 transition-all active:scale-95 shadow-sm"
-            >
-              <MoreHorizontal size={22} />
-            </button>
-          </div>
-          
-          {/* Over-image Text (Mapped from user content to match reference layout) */}
-          <div className="absolute bottom-10 w-full px-6 z-20">
-            {/* Pill Badge */}
-            <div className="bg-white/95 text-[#f84a4a] px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wide w-max mb-4 shadow-sm">
-              Top Rated Recipe
-            </div>
-            
-            <div className="flex justify-between items-end mb-1">
-              <h1 className="text-[32px] font-light text-white leading-[1.15] max-w-[70%]">
-                Creamy Mustard Chicken
-              </h1>
-              <span className="text-[28px] text-white font-light tracking-tight">
-                $390
-              </span>
-            </div>
-            
-            <div className="flex justify-between items-center mt-3">
-              <span className="text-white/80 text-[13px] font-light">By Rachel Gurjar</span>
-              <span className="text-white/80 text-[13px] font-light">45 min cook time</span>
-            </div>
-          </div>
+        {/* Full-Width Hero Image Section */}
+        <div className="w-full h-[320px] md:h-[380px] relative overflow-hidden">
+           <img 
+             src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=1200&auto=format&fit=crop&q=80"
+             alt="Avocado Toast"
+             className="w-full h-full object-cover"
+           />
+           {/* Subtle gradient overlay to make top header transition smoother */}
+           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent pointer-events-none"></div>
         </div>
 
-        {/* Bottom Sheet Card */}
-        <div className="relative z-30 bg-white rounded-t-[36px] px-6 py-7 -mt-6 shadow-[0_-15px_40px_rgba(0,0,0,0.15)] flex flex-col min-h-[45vh]">
-          
-          {/* Card Header */}
-          <div className="flex justify-between items-end mb-3">
-            <h2 className="text-[19px] font-bold text-gray-900 leading-tight max-w-[75%]">
-              Creamy Mustard Shallot Chicken
-            </h2>
-            <span className="text-gray-400 font-medium text-sm mb-0.5">4.8 ⭐</span>
-          </div>
+        {/* Content Area with Padding */}
+        <div className="px-6 py-6 pb-[200px]">
+           {/* Product Title & Row info */}
+           <div className="relative mb-6">
+              <h1 className="text-[28px] font-bold text-gray-900 mb-2">Avocado Toast</h1>
+              
+              <div className="flex items-center gap-4 text-[13px] font-semibold text-gray-400">
+                 <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                    <span>245 kcal.</span>
+                 </div>
+                 <div className="flex items-center gap-1">
+                    <Star size={14} className="text-amber-400 fill-amber-400" />
+                    <span>4.5 star</span>
+                 </div>
+                 <div className="flex items-center gap-1">
+                    <Watch size={14} className="text-blue-400" />
+                    <span>45 min</span>
+                 </div>
+              </div>
 
-          <p className="text-gray-500 text-[13px] leading-relaxed font-light mb-8">
-            This weeknight one-skillet recipe features creamy mustard chicken breasts in a velvety sauce with Dijon, thyme, and a hint of turmeric. Perfectly served over a bed of mashed potatoes or pasta.
-          </p>
+              {/* Favorite Heart Button */}
+              <button 
+                onClick={() => setIsFavorite(!isFavorite)}
+                className={`absolute right-0 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.1)] transition-all ${isFavorite ? 'bg-red-500 text-white' : 'bg-[#6dbd6e] text-white'}`}
+              >
+                 <Heart size={24} fill={isFavorite ? "white" : "none"} strokeWidth={isFavorite ? 0 : 2} />
+              </button>
+           </div>
 
-          {/* Pillars Layout (Adapting user's Time, Yield, Rating to the reference's pillared UI) */}
-          <div className="flex justify-between gap-3 h-[130px] mb-8">
-            
-            <div className="flex-1 bg-[#f5f7fa] rounded-[22px] flex flex-col items-center justify-between py-3.5 relative overflow-hidden group">
-              <div className="absolute bottom-0 left-0 w-full bg-[#e3effd] h-[45%] rounded-[22px] z-0 transition-all duration-500 group-hover:h-[50%]"></div>
-              <span className="text-gray-400 text-[11px] font-medium z-10">Time</span>
-              <span className="text-gray-900 text-[14px] font-bold z-10">45 min</span>
-            </div>
+           {/* Details Section */}
+           <div className="mb-10">
+              <h2 className="text-[19px] font-bold text-gray-900 mb-3 uppercase tracking-tight">Details</h2>
+              <p className="text-gray-500 text-[15px] leading-[1.6]">
+                Lorem ipsum dolor sit amet consectetur adipiscing elit. Turpis sit massa in imperdiet feugiat quis enim Cras egestas. Turpis sit massa in imperdiet feugiat quis enim Cras egestas.
+              </p>
+           </div>
 
-            <div className="flex-1 bg-[#f5f7fa] rounded-[22px] flex flex-col items-center justify-between py-3.5 relative overflow-hidden group">
-              <div className="absolute bottom-0 left-0 w-full bg-[#e3effd] h-[65%] rounded-[22px] z-0 transition-all duration-500 group-hover:h-[70%]"></div>
-              <span className="text-gray-400 text-[11px] font-medium z-10">Yield</span>
-              <span className="text-gray-900 text-[14px] font-bold z-10">2 serv</span>
-            </div>
+           {/* Interactive User Rating Section */}
+           <div className="mb-8">
+              <h2 className="text-[19px] font-bold text-gray-900 mb-4 uppercase tracking-tight">Rate this food</h2>
+              <div className="flex items-center justify-between bg-white rounded-[24px] p-5 border border-gray-100 shadow-sm">
+                 <span className="text-[14px] font-medium text-gray-500">How was your meal?</span>
+                 <div className="flex items-center gap-1.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                       <button 
+                          key={star}
+                          onClick={() => setUserRating(star)}
+                          className="transition-transform active:scale-90"
+                       >
+                          <Star 
+                             size={22} 
+                             className={`${star <= userRating ? 'text-amber-400 fill-amber-400' : 'text-gray-200'}`} 
+                             strokeWidth={star <= userRating ? 0 : 2}
+                          />
+                       </button>
+                    ))}
+                 </div>
+              </div>
+           </div>
 
-            <div className="flex-1 bg-[#f5f7fa] rounded-[22px] flex flex-col items-center justify-between py-3.5 relative overflow-hidden group">
-              <div className="absolute bottom-0 left-0 w-full bg-[#e3effd] h-[85%] rounded-[22px] z-0 transition-all duration-500 group-hover:h-[90%]"></div>
-              <span className="text-gray-400 text-[11px] font-medium z-10">Rating</span>
-              <span className="text-gray-900 text-[14px] font-bold z-10">4.8</span>
-            </div>
+           {/* Rating & Review Section */}
+           <div className="mb-8">
+              <h2 className="text-[19px] font-bold text-gray-900 mb-5 uppercase tracking-tight">Rating & Reviews</h2>
+              
+              <div className="bg-gray-50/50 rounded-[28px] p-6 border border-gray-100/50">
+                 <div className="flex items-center gap-8">
+                    {/* Big Score */}
+                    <div className="flex flex-col items-center">
+                       <span className="text-[42px] font-bold text-gray-900 leading-none">4.5</span>
+                       <div className="flex items-center gap-0.5 mt-2">
+                          {[1,2,3,4].map(i => <Star key={i} size={14} className="text-amber-400 fill-amber-400" />)}
+                          <Star size={14} className="text-amber-400" />
+                       </div>
+                       <span className="text-[12px] text-gray-400 mt-2 font-medium">124 Reviews</span>
+                    </div>
 
-          </div>
-
-          {/* Preserved Action Buttons seamlessly integrated at the bottom */}
-          <div className="flex gap-2 mt-auto">
-            <button 
-              onClick={() => navigate('/payment')}
-              className="flex-[1.5] bg-[#111111] hover:bg-gray-900 transition-colors py-3.5 rounded-2xl flex items-center justify-center gap-2 text-white font-bold text-[14px] shadow-md"
-            >
-              <ChefHat size={18} />
-              Cook Now
-            </button>
-            <button 
-              onClick={handleAddToList}
-              className="flex-1 bg-[#fdfdfd] hover:bg-gray-50 transition-colors py-2 rounded-2xl flex flex-col items-center justify-center text-gray-700 shadow-sm border border-gray-100 border-b-2 group"
-            >
-              <ClipboardList size={20} className="mb-1 text-[#f84a4a] group-active:scale-95 transition-transform" strokeWidth={2.2} />
-              <span className="text-[10px] uppercase font-bold tracking-tight">Add to List</span>
-            </button>
-            <button 
-              className="flex-1 bg-[#fdfdfd] hover:bg-gray-50 transition-colors py-2 rounded-2xl flex flex-col items-center justify-center text-gray-700 shadow-sm border border-gray-100 border-b-2 group"
-            >
-              <Bell size={20} className="mb-1 text-gray-400 group-active:scale-95 transition-transform" strokeWidth={2.2} />
-              <span className="text-[10px] uppercase font-bold tracking-tight">Waiter</span>
-            </button>
-          </div>
-          
-
+                    {/* Progress Bars */}
+                    <div className="flex-1 flex flex-col gap-2">
+                       {[5, 4, 3, 2, 1].map((star) => (
+                          <div key={star} className="flex items-center gap-3">
+                             <span className="text-[11px] font-bold text-gray-400 w-2">{star}</span>
+                             <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                <div 
+                                   className="h-full bg-amber-400 rounded-full" 
+                                   style={{ width: `${star === 5 ? '70%' : star === 4 ? '20%' : star === 3 ? '5%' : '2.5%'}` }}
+                                ></div>
+                             </div>
+                          </div>
+                       ))}
+                    </div>
+                 </div>
+              </div>
+           </div>
         </div>
+
       </div>
+
+      {/* Sticky Bottom Action Bar - Anchored to the container bottom */}
+      <div className="absolute bottom-[108px] left-1/2 -translate-x-1/2 w-[92%] bg-white/95 backdrop-blur-xl px-4 py-3.5 rounded-[22px] shadow-[0_15px_35px_rgba(0,0,0,0.12)] border border-gray-100 flex items-center justify-between gap-3 z-50">
+        
+        {/* Quantity Controls */}
+        <div className="flex items-center bg-gray-50 rounded-full p-1 border border-gray-100 shadow-inner">
+           <button 
+              onClick={handleDecreaseQuantity}
+              className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors bg-white rounded-full shadow-sm"
+           >
+              <Minus size={16} strokeWidth={2.5} />
+           </button>
+           
+           <span className="w-8 text-center font-bold text-[14px] text-gray-800">
+              {quantity}x
+           </span>
+
+           <button 
+              onClick={handleIncreaseQuantity}
+              className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors bg-white rounded-full shadow-sm"
+           >
+              <Plus size={16} strokeWidth={2.5} />
+           </button>
+        </div>
+
+        {/* Price / Order Button */}
+        <button 
+           onClick={handleBuyNow}
+           className="flex-1 bg-[#6dbd6e] text-white py-4 px-6 rounded-[18px] font-bold text-[16px] shadow-[0_8px_25px_rgba(109,189,110,0.3)] hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center"
+        >
+           Order for ${45 * quantity}
+        </button>
+      </div>
+
     </div>
   );
 };

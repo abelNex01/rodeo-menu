@@ -1,27 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiSearch, FiMap } from "react-icons/fi";
-import { FaFire, FaStar, FaMapMarkerAlt } from "react-icons/fa";
-import {
-  Leaf,
-  UtensilsCrossed,
-  Soup,
-  Pizza,
-  Coffee,
-  Cake,
-  ChevronRight,
-  ArrowRight,
+import { motion, AnimatePresence } from "framer-motion";
+
+import banner1 from "../assets/banner1.jpg";
+import banner2 from "../assets/banner2.jpg";
+import banner3 from "../assets/banner3.jpg";
+
+import { 
+  Search, 
+  SlidersHorizontal, 
+  Star, 
+  Plus, 
+  ChevronDown, 
+  Utensils,
+  ArrowRight
 } from "lucide-react";
-import rodeomini from "../assets/rodeomini.png";
+import section1 from "../assets/category/section1.png";
+import section2 from "../assets/category/section2.png";
+import section3 from "../assets/category/section3.png";
+import section4 from "../assets/category/section4.png";
+import section5 from "../assets/category/section5.png";
+import section6 from "../assets/category/section6.png";
 
 // ── Keep existing data ──
 const quickCategories = [
-  { id: "all", name: "All buka", icon: <UtensilsCrossed size={22} /> },
-  { id: "rice", name: "Rice", icon: <Soup size={22} /> },
-  { id: "swallow", name: "Swallow", icon: <Pizza size={22} /> },
-  { id: "snacks", name: "Snacks", icon: <Coffee size={22} /> },
-  { id: "salads", name: "Salads", icon: <Leaf size={22} /> },
-  { id: "desserts", name: "Desserts", icon: <Cake size={22} /> },
+  { id: "all", name: "All", icon: <Utensils size={24} /> },
+  { id: "appetizers", name: "Appetizers", img: section1 },
+  { id: "salads", name: "Salads" , img: section2  },
+  { id: "soups", name: "Soups" , img: section3  },
+  { id: "mains", name: "Mains" , img: section4  },
+  { id: "grill", name: "Grill" , img: section5  },
+  { id: "burgers", name: "Burgers", img: section6 },
+  { id: "pizza", name: "Pizza", img: section1 },
+  { id: "traditional", name: "Traditional" , img: section2  },
+  { id: "seafood", name: "Seafood", img: section3 },
+  { id: "vegetarian", name: "Vegetarian" , img: section2  },
+  { id: "sides", name: "Sides" , img: section2 },
+  { id: "desserts", name: "Desserts", img: section6 },
+  { id: "beverages", name: "Beverages" , img: section2  },
+];
+
+const banners = [
+  { id: 1, image: banner1 },
+  { id: 2, image: banner2 },
+  { id: 3, image: banner3 }
 ];
 
 const topRated = [
@@ -118,240 +140,289 @@ const suggested = [
   },
 ];
 
-const Specials = () => {
+const Specials = ({ setCart }) => {
   const navigate = useNavigate();
+  const [currentBanner, setCurrentBanner] = useState(0);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
+  const [showAllTop, setShowAllTop] = useState(false);
+  const [showAllSuggested, setShowAllSuggested] = useState(false);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleQuickAdd = (e, item) => {
+    e.stopPropagation();
+    const newItem = {
+      cartId: Date.now(),
+      ...item,
+      price: parseFloat(item.price)
+    };
+    setCart(prev => [...(prev || []), newItem]);
+  };
 
   return (
-    <div className="w-full min-h-full bg-[#fcfcfc] pb-[100px] text-gray-900 font-sans">
-      {/* ===== Location Header ===== */}
-      <div className="px-5 pt-5 pb-3 flex items-center justify-between">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-1.5">
-            <FaMapMarkerAlt className="text-[14px] text-gray-800" />
-            <span className="text-[15px] font-bold text-gray-900">
-              Bole, Addis Ababa.
-            </span>
-            <svg
-              width="10"
-              height="6"
-              viewBox="0 0 10 6"
-              fill="none"
-              className="ml-0.5 mt-0.5"
-            >
-              <path
-                d="M1 1L5 5L9 1"
-                stroke="#666"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <span className="text-[12px] text-gray-400 mt-0.5 ml-5">
-            Locate restaurants in your area today.
-          </span>
-        </div>
-        {/* Avatar */}
-        <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-amber-400 flex-shrink-0">
-          <img
-            src={rodeomini}
-            alt="Avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
-      {/* ===== Greeting ===== */}
-      <div className="px-5 pt-2 pb-4">
-        <h1 className="text-[26px] font-bold text-gray-900 leading-tight">
-          Good evening Guest...
-        </h1>
-      </div>
-
-      {/* ===== Search Bar ===== */}
-      <div className="px-5 pb-5">
-        <div className="flex items-center bg-white rounded-[14px] px-4 py-3.5 border border-gray-200 shadow-sm">
-          <FiSearch className="text-gray-400 text-[18px] mr-3 flex-shrink-0" />
-          <span className="text-[14px] text-gray-400">Search here</span>
-        </div>
-      </div>
-
-      {/* ===== Category Pills ===== */}
-      <div className="px-5 pb-5 flex gap-3 overflow-x-auto hide-scrollbar">
-        {quickCategories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`flex flex-col items-center gap-2 px-5 py-3 rounded-[16px] min-w-[80px] transition-all flex-shrink-0 ${
-              activeCategory === cat.id
-                ? "bg-white text-gray-900 shadow-md border border-gray-100"
-                : "bg-transparent text-gray-400 border border-gray-100"
-            }`}
+    <div className="w-full min-h-screen flex flex-col pb-20 font-sans overflow-x-hidden bg-[#f8f9fa]">
+      
+      <div className="px-5 pt-4">
+        {/* Menu Categories Section */}
+        <div className="mb-6">
+          <div 
+            className="flex justify-between items-center mb-3 cursor-pointer"
+            onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
           >
-            <span
-              className={`${
-                activeCategory === cat.id ? "text-gray-900" : "text-gray-400"
-              }`}
-            >
-              {cat.icon}
-            </span>
-            <span
-              className={`text-[11px] font-semibold whitespace-nowrap ${
-                activeCategory === cat.id ? "text-gray-900" : "text-gray-400"
-              }`}
-            >
-              {cat.name}
-            </span>
-          </button>
-        ))}
-      </div>
+            <h3 className="text-[20px] font-bold text-gray-900">Menu Categories</h3>
+            <button className="flex items-center gap-1 text-amber-500 font-semibold text-[13px]">
+              <span>{isCategoriesExpanded ? "Show Less" : "See All"}</span>
+              <motion.div
+                animate={{ rotate: isCategoriesExpanded ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ChevronDown size={16} />
+              </motion.div>
+            </button>
+          </div>
+          
+          <AnimatePresence>
+            {isCategoriesExpanded ? (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-5 gap-1 pb-2">
+                  {quickCategories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setActiveCategory(cat.id);
+                        setIsCategoriesExpanded(false);
+                      }}
+                      className="flex flex-col items-center justify-center p-1 transition-all"
+                    >
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-1 transition-all ${
+                        activeCategory === cat.id ? "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.08)] border-2 border-amber-400/20" : "bg-white border border-gray-100"
+                      }`}>
+                        {cat.img ? (
+                          <img src={cat.img} alt={cat.name} className="w-10 h-10 object-contain" />
+                        ) : (
+                          <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
+                            {cat.icon}
+                          </span>
+                        )}
+                      </div>
+                      <span className={`text-[10px] font-bold text-center leading-tight ${activeCategory === cat.id ? "text-gray-900" : "text-gray-500"}`}>{cat.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            ) : (
+              <div className="pb-2 flex gap-1.5 overflow-x-auto hide-scrollbar -mx-5 px-5">
+                {quickCategories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className="flex flex-col items-center justify-center min-w-[72px] flex-shrink-0 transition-all"
+                  >
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all ${
+                      activeCategory === cat.id 
+                        ? "bg-white shadow-[0_8px_15px_rgba(0,0,0,0.08)] border-2 border-amber-400/20" 
+                        : "bg-white border border-gray-100"
+                    }`}>
+                      {cat.img ? (
+                        <img src={cat.img} alt={cat.name} className="w-11 h-11 object-contain" />
+                      ) : (
+                        <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
+                          {cat.icon}
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={`text-[12px] font-bold whitespace-nowrap ${
+                        activeCategory === cat.id ? "text-gray-900" : "text-gray-500"
+                      }`}
+                    >
+                      {cat.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="flex items-center bg-white rounded-xl px-4 py-3.5 shadow-sm border border-gray-100">
+            <Search size={20} className="text-gray-400 min-w-[20px]" />
+            <input 
+              type="text" 
+              placeholder="Search any recipes of your choice..." 
+              className="flex-1 bg-transparent outline-none px-3 text-[14px] text-gray-700 placeholder:text-gray-400" 
+            />
+            <div className="w-[1px] h-5 bg-gray-200 mx-1"></div>
+            <button className="p-1 text-amber-500">
+              <SlidersHorizontal size={18} />
+            </button>
+          </div>
+        </div>
 
       {/* ===== Top Rated Section ===== */}
-      <div className="px-5 pb-2">
-        <div className="flex items-center justify-between mb-3">
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-[20px] font-bold text-gray-900">
-            Top rated bukas
+            Top rated specials
           </h2>
-          <button className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 bg-white">
-            <span className="text-[12px] font-medium text-gray-500">
-              See all
+          <button 
+            onClick={() => setShowAllTop(!showAllTop)}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-full border transition-all ${showAllTop ? 'bg-amber-500 border-amber-500 text-white' : 'border-gray-200 bg-white text-gray-500'}`}
+          >
+            <span className="text-[12px] font-medium">
+              {showAllTop ? "Show Less" : "See all"}
             </span>
-            <ArrowRight size={12} className="text-gray-500" />
+            <ArrowRight size={12} className={`transition-transform ${showAllTop ? 'rotate-90' : ''}`} />
           </button>
         </div>
-      </div>
 
-      {/* Horizontal scrolling cards */}
-      <div className="px-5 pb-6 flex gap-3 overflow-x-auto hide-scrollbar">
-        {topRated.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => navigate(`/food/${item.id}`)}
-            className="min-w-[260px] bg-white rounded-[18px] overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
-          >
-            {/* Card Image */}
-            <div className="w-full h-[150px] overflow-hidden relative">
-              <img
-                src={item.img}
-                alt={item.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Card Info */}
-            <div className="p-3 pb-3.5">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-[14px] font-bold text-gray-900 truncate flex-1">
-                  {item.name}
-                </h3>
-                <div className="flex items-center gap-1 ml-2 flex-shrink-0">
-                  <FaStar className="text-[11px] text-amber-400" />
-                  <span className="text-[12px] font-semibold text-gray-700">
-                    {item.review}
-                  </span>
+        <div className={showAllTop ? "grid grid-cols-2 gap-3 pb-4" : "flex overflow-x-auto hide-scrollbar gap-3 pb-4 -mx-5 px-5"}>
+          {topRated.map((item) => (
+            <div 
+              key={item.id}
+              onClick={() => navigate(`/food/${item.id}`)}
+              className={`bg-white rounded-[20px] p-1.5 flex flex-col shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] cursor-pointer active:scale-[0.98] transition-all flex-shrink-0 ${!showAllTop ? 'w-[180px]' : ''}`}
+            >
+              {/* Top Image Section */}
+              <div className="w-full h-[140px] rounded-[16px] overflow-hidden relative mb-2">
+                <img 
+                  src={item.img} 
+                  alt={item.name} 
+                  className="w-full h-full object-cover" 
+                />
+                
+                {/* Rating Badge (Top Left) */}
+                <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                  <Star size={11} className="text-[#facc15] fill-[#facc15]" />
+                  <span className="text-[11px] font-bold text-gray-800">{item.review}</span>
                 </div>
+
+                {/* Plus Icon (Top Right) */}
+                <button 
+                  onClick={(e) => handleQuickAdd(e, item)}
+                  className="absolute top-2 right-2 w-8 h-8 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto hover:bg-white/60 transition-colors"
+                >
+                  <Plus size={18} strokeWidth={3} className="text-white" />
+                </button>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <FaMapMarkerAlt className="text-[10px] text-gray-400" />
-                  <span className="text-[11px] text-gray-400">
-                    {item.location}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <svg
-                    width="10"
-                    height="12"
-                    viewBox="0 0 10 12"
-                    fill="none"
+
+              {/* Text Info Section */}
+              <div className="flex flex-col flex-1 px-1">
+                <h4 className="text-[14px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
+                <p className="text-[11px] text-gray-400 font-medium mb-2 line-clamp-1">{item.desc}</p>
+                
+                {/* Bottom Row */}
+                <div className="mt-auto flex justify-between items-center">
+                  <button 
+                    onClick={(e) => handleQuickAdd(e, item)}
+                    className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-[13px] font-bold px-3 py-1.5 rounded-[8px] tracking-wide relative overflow-hidden group shadow-[0_4px_12px_rgba(245,158,11,0.3)]"
                   >
-                    <path
-                      d="M5 0C5 0 5 3 2 5C5 5 5 8 5 12C5 8 5 5 8 5C5 3 5 0 5 0Z"
-                      fill="#999"
-                    />
-                  </svg>
-                  <span className="text-[11px] text-gray-400">
-                    {item.distance}
-                  </span>
+                    <span className="relative z-10">{item.price} <span className="text-[10px] ml-0.5">ETB</span></span>
+                  </button>
+                  
+                  <div className="bg-gray-50 border border-gray-100 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span className="text-[10px] font-bold text-gray-800">{item.time}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* ===== Suggested Section ===== */}
-      <div className="px-5 pb-2">
-        <div className="flex items-center justify-between mb-3">
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-[20px] font-bold text-gray-900">
-            Suggested bukas
+            Suggested specials
           </h2>
-          <button className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 bg-white">
-            <span className="text-[12px] font-medium text-gray-500">
-              See all
+          <button 
+            onClick={() => setShowAllSuggested(!showAllSuggested)}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-full border transition-all ${showAllSuggested ? 'bg-amber-500 border-amber-500 text-white' : 'border-gray-200 bg-white text-gray-500'}`}
+          >
+            <span className="text-[12px] font-medium">
+              {showAllSuggested ? "Show Less" : "See all"}
             </span>
-            <ArrowRight size={12} className="text-gray-500" />
+            <ArrowRight size={12} className={`transition-transform ${showAllSuggested ? 'rotate-90' : ''}`} />
           </button>
         </div>
-      </div>
 
-      {/* Horizontal scrolling cards */}
-      <div className="px-5 pb-6 flex gap-3 overflow-x-auto hide-scrollbar">
-        {suggested.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => navigate(`/food/${item.id}`)}
-            className="min-w-[260px] bg-white rounded-[18px] overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
-          >
-            {/* Card Image */}
-            <div className="w-full h-[150px] overflow-hidden relative">
-              <img
-                src={item.img}
-                alt={item.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Card Info */}
-            <div className="p-3 pb-3.5">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-[14px] font-bold text-gray-900 truncate flex-1">
-                  {item.name}
-                </h3>
-                <div className="flex items-center gap-1 ml-2 flex-shrink-0">
-                  <FaStar className="text-[11px] text-amber-400" />
-                  <span className="text-[12px] font-semibold text-gray-700">
-                    {item.review}
-                  </span>
+        <div className={showAllSuggested ? "grid grid-cols-2 gap-3 pb-4" : "flex overflow-x-auto hide-scrollbar gap-3 pb-4 -mx-5 px-5"}>
+          {suggested.map((item) => (
+            <div 
+              key={item.id}
+              onClick={() => navigate(`/food/${item.id}`)}
+              className={`bg-white rounded-[20px] p-1.5 flex flex-col shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] cursor-pointer active:scale-[0.98] transition-all flex-shrink-0 ${!showAllSuggested ? 'w-[180px]' : ''}`}
+            >
+              {/* Top Image Section */}
+              <div className="w-full h-[140px] rounded-[16px] overflow-hidden relative mb-2">
+                <img 
+                  src={item.img} 
+                  alt={item.name} 
+                  className="w-full h-full object-cover" 
+                />
+                
+                {/* Rating Badge (Top Left) */}
+                <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                  <Star size={11} className="text-[#facc15] fill-[#facc15]" />
+                  <span className="text-[11px] font-bold text-gray-800">{item.review}</span>
                 </div>
+
+                {/* Plus Icon (Top Right) */}
+                <button 
+                  onClick={(e) => handleQuickAdd(e, item)}
+                  className="absolute top-2 right-2 w-8 h-8 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto hover:bg-white/60 transition-colors"
+                >
+                  <Plus size={18} strokeWidth={3} className="text-white" />
+                </button>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <FaMapMarkerAlt className="text-[10px] text-gray-400" />
-                  <span className="text-[11px] text-gray-400">
-                    {item.location}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <svg
-                    width="10"
-                    height="12"
-                    viewBox="0 0 10 12"
-                    fill="none"
+
+              {/* Text Info Section */}
+              <div className="flex flex-col flex-1 px-1">
+                <h4 className="text-[14px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
+                <p className="text-[11px] text-gray-400 font-medium mb-2 line-clamp-1">{item.desc}</p>
+                
+                {/* Bottom Row */}
+                <div className="mt-auto flex justify-between items-center">
+                  <button 
+                    onClick={(e) => handleQuickAdd(e, item)}
+                    className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-[13px] font-bold px-3 py-1.5 rounded-[8px] tracking-wide relative overflow-hidden group shadow-[0_4px_12px_rgba(245,158,11,0.3)]"
                   >
-                    <path
-                      d="M5 0C5 0 5 3 2 5C5 5 5 8 5 12C5 8 5 5 8 5C5 3 5 0 5 0Z"
-                      fill="#999"
-                    />
-                  </svg>
-                  <span className="text-[11px] text-gray-400">
-                    {item.distance}
-                  </span>
+                    <span className="relative z-10">{item.price} <span className="text-[10px] ml-0.5">ETB</span></span>
+                  </button>
+                  
+                  <div className="bg-gray-50 border border-gray-100 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span className="text-[10px] font-bold text-gray-800">{item.time}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+    </div>
 
       {/* ===== Hide Scrollbar CSS ===== */}
       <style

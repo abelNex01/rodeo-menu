@@ -12,10 +12,12 @@ import Header from "./components/Header";
 
 function App() {
   const [cart, setCart] = useState([]);
+  const [orderItems, setOrderItems] = useState([]); // Specifically for the current order
   const [isCalling, setIsCalling] = useState(false);
   const location = useLocation();
 
   console.log("App Cart State:", cart);
+  console.log("App Order Items:", orderItems);
 
   // Sync isCalling (this is simplified, ideally you'd use a context)
   const handleCallWaiter = () => {
@@ -31,7 +33,7 @@ function App() {
 
   return (
     <div className="w-full h-screen h-[100dvh] bg-gray-50 flex justify-center items-center overflow-hidden">
-      <div className="w-full max-w-[450px] md:max-w-[768px] h-full bg-white relative overflow-hidden shadow-2xl flex flex-col mx-auto">
+      <div className="w-full max-w-[450px] md:max-w-[768px] h-full bg-[#f8f9fa] relative overflow-hidden shadow-2xl flex flex-col mx-auto">
         
         {showNav && <Header isCalling={isCalling} handleCallWaiter={handleCallWaiter} />}
 
@@ -40,11 +42,11 @@ function App() {
             <Route path="/" element={<Welcome />} />
             <Route path="/categories" element={<Categories cart={cart} setCart={setCart} />} />
             <Route path="/menu" element={<Categories cart={cart} setCart={setCart} />} />
-            <Route path="/food/:id" element={<FoodDetails cart={cart} setCart={setCart} />} />
-            <Route path="/orders" element={<OrderList cart={cart} setCart={setCart} />} />
-            <Route path="/payment" element={<Payment cart={cart} />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
-            <Route path="/specials" element={<Specials />} />
+            <Route path="/food/:id" element={<FoodDetails cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
+            <Route path="/orders" element={<OrderList cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
+            <Route path="/payment" element={<Payment cart={orderItems} />} />
+            <Route path="/order-success" element={<OrderSuccess cart={orderItems} setOrderItems={setOrderItems} />} />
+            <Route path="/specials" element={<Specials cart={cart} setCart={setCart} />} />
           </Routes>
         </div>
 

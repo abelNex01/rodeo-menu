@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 // Pre-calculate confetti values to avoid strict randomness during renders
 // and create a realistic radial explosion
@@ -76,9 +77,15 @@ const receiptVariants = {
   },
 };
 
-const OrderSuccess = () => {
+const OrderSuccess = ({ cart = [] }) => {
+  const navigate = useNavigate();
+
+  const subtotal = cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
+  const tax = subtotal * 0.15; // 15% VAT
+  const total = subtotal + tax;
+
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col items-center pt-10 font-sans overflow-hidden">
+    <div className="w-full min-h-screen bg-[#f8f9fa] flex flex-col items-center pt-10 font-sans overflow-hidden px-5">
       {/* Celebration Area */}
       <div className="relative w-full flex justify-center items-center mb-6">
         {/* Confetti */}
@@ -122,7 +129,7 @@ const OrderSuccess = () => {
         variants={textVariants}
         initial="hidden"
         animate="visible"
-        className="text-gray-900 text-[26px] font-bold tracking-tight z-10 relative"
+        className="text-gray-900 text-[28px] font-bold tracking-tight z-10 relative"
       >
        Order Complete
       </motion.h1>
@@ -138,12 +145,12 @@ const OrderSuccess = () => {
         />
 
         {/* Receipt Container & Mask */}
-        <div className="w-[260px] overflow-hidden relative z-10 -mt-[3px]">
+        <div className="w-[280px] overflow-hidden relative z-10 -mt-[3px]">
           <motion.div
             variants={receiptVariants}
             initial="hidden"
             animate="visible"
-            className="w-full bg-white rounded-b-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-gray-100 pb-2"
+            className="w-full bg-white rounded-b-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-gray-100 pb-5"
           >
             {/* Jagged Top Edge (SVG) */}
             <svg
@@ -155,56 +162,44 @@ const OrderSuccess = () => {
             </svg>
 
             {/* Receipt Content */}
-            <div className="px-5 pt-5 pb-4 flex flex-col gap-4">
-              {/* Row 1: User & Points */}
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-[30px] h-[30px] rounded bg-[#EADDFF] flex justify-center items-center text-[#4F378B] font-bold text-[11px] tracking-wide">
-                    SH
-                  </div>
-                  <span className="text-[14px] font-semibold text-gray-900">
-                    Sebastian Henderson
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-[14px] h-[14px] rounded-full bg-gray-200 flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-                  </div>
-                  <span className="text-[13px] font-medium text-gray-500">
-                    13,521
-                  </span>
-                </div>
+            <div className="px-5 pt-5 flex flex-col gap-4">
+              
+              {/* Order Items Section */}
+              <div className="flex flex-col gap-2.5">
+                {cart.length > 0 ? (
+                  cart.map((item) => (
+                    <div key={item.cartId} className="flex justify-between items-center text-[13px]">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-gray-900 line-clamp-1">{item.name}</span>
+                        <span className="text-gray-400 font-medium">Qty: {item.quantity || 1}</span>
+                      </div>
+                      <span className="font-bold text-gray-900">
+                        {(item.price * (item.quantity || 1)).toFixed(0)} ETB
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-2 text-gray-400 text-[12px] font-medium">No items found</div>
+                )}
               </div>
 
-              {/* Row 2: Method & Date */}
-              <div className="flex flex-col gap-0.5 mt-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-[22px] h-[22px] rounded-sm bg-[#FFC627] flex items-center justify-center">
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M12 2L22 12L12 22L2 12L12 2Z" fill="white" />
-                    </svg>
-                  </div>
-                  <span className="text-[14px] font-bold text-gray-900">
-                    e-Transfer®
-                  </span>
+              {/* Total Section */}
+              <div className="border-t border-dashed border-gray-200 pt-3 mt-1 flex flex-col gap-1">
+                <div className="flex justify-between items-center">
+                   <span className="text-[14px] font-bold text-gray-900">TOTAL AMOUNT</span>
+                   <span className="text-[18px] font-black text-amber-500">{total.toFixed(0)} ETB</span>
                 </div>
-                <span className="text-[12px] text-gray-400 font-medium ml-[30px]">
-                  May 12th, 2024
-                </span>
+                <span className="text-[11px] text-gray-400 font-medium italic">Incl. 15% VAT</span>
               </div>
 
-              {/* Row 3: Action Button */}
-              <div className="w-full mt-2 border-2 border-dashed border-gray-200 bg-[#F9FAFB] rounded-lg py-2 flex justify-center items-center">
-                <span className="text-[13px] font-medium text-gray-500">
-                 Payment
-                </span>
-              </div>
+              {/* Pay Now Button (Functional) */}
+              <button 
+                onClick={() => navigate('/payment')}
+                className="w-full mt-4 bg-gradient-to-br from-amber-400 to-orange-500 text-white py-4 rounded-[16px] font-bold text-[15px] shadow-[0_4px_15px_rgba(245,158,11,0.25)] hover:opacity-95 active:scale-95 transition-all flex items-center justify-center"
+              >
+                Pay Now
+              </button>
+
             </div>
           </motion.div>
         </div>

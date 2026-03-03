@@ -14,7 +14,7 @@ const Header = ({ isCalling, handleCallWaiter }) => {
   
   const getPageTitle = () => {
     if (location.pathname.startsWith("/food/")) return "Details";
-    if (location.pathname === "/orders") return "Cart";
+    if (location.pathname === "/orders") return "Order";
     if (location.pathname === "/payment") return "Payment";
     if (location.pathname === "/specials") return "Specials";
     if (location.pathname === "/order-success") return "Success";
@@ -24,7 +24,7 @@ const Header = ({ isCalling, handleCallWaiter }) => {
   const title = getPageTitle();
 
   return (
-    <div className="bg-white px-4 pt-8 pb-4 shadow-sm border-b border-gray-100 sticky top-0 z-[100]">
+    <div className="bg-white px-5 pt-6 pb-4 shadow-sm border-b border-gray-100 sticky top-0 z-[100]">
       {/* Top Header */}
       <div className="relative flex justify-between items-center z-50">
         
@@ -32,7 +32,7 @@ const Header = ({ isCalling, handleCallWaiter }) => {
         <div className="flex items-center gap-3">
           {!isMenuPage && (
             <button 
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/categories")}
               className="p-1 -ml-1 text-gray-900 transition-colors"
             >
               <ArrowLeft size={24} strokeWidth={2.5} />
@@ -40,7 +40,7 @@ const Header = ({ isCalling, handleCallWaiter }) => {
           )}
           
           {isMenuPage ? (
-            <img src={rodeomini} alt="Rodeo Logo" className="h-[40px] w-auto object-contain" />
+            <img src={rodeomini} alt="Rodeo Logo" className="h-[50px] w-auto object-contain" />
           ) : (
             <span className="text-[18px] font-bold text-gray-900">{title}</span>
           )}

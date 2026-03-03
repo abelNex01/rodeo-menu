@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, Plus, Minus, BadgePercent } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const OrderList = ({ cart = [], setCart }) => {
+const OrderList = ({ cart = [], setCart, setOrderItems }) => {
   const navigate = useNavigate();
 
   const handleRemove = (id) => {
@@ -25,22 +26,51 @@ const OrderList = ({ cart = [], setCart }) => {
   const total = subtotal + taxAmount;
 
   return (
-    <div className="w-full h-full bg-[#f8f9fb] flex flex-col font-sans relative overflow-hidden">
+    <div className="w-full h-full bg-[#f8f9fa] flex flex-col font-sans relative overflow-hidden">
       
 
-      <div className="px-6 mb-8 mt-2">
-        <h1 className="text-[32px] font-bold text-gray-900 leading-[1.1] max-w-[50%]">My<br/>Cart List</h1>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="px-6 mb-8 mt-6"
+      >
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-3">
+             <div className="w-2 h-10 bg-gradient-to-b from-amber-400 to-orange-500 rounded-full"></div>
+             <h1 className="text-[34px] font-black text-[#1c1c1e] tracking-tight leading-none">
+                Order <span className="text-amber-500">List</span>
+             </h1>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-6 pb-[220px] custom-scrollbar flex flex-col">
+      <div className="flex-1 overflow-y-auto px-5 pb-[220px] custom-scrollbar flex flex-col">
         
         {/* Items List */}
         <div className="flex flex-col gap-6 w-full">
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-4">
-              <p className="font-medium text-[15px]">Your cart is empty</p>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center py-20 text-gray-400 gap-5 text-center mt-10"
+            >
+              <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center shadow-inner">
+                 <Trash2 size={40} className="text-gray-300" strokeWidth={1.5} />
+              </div>
+              <div className="space-y-1">
+                <p className="font-bold text-[20px] text-gray-800">Your cart is empty</p>
+                <p className="text-[14px] text-gray-400 max-w-[200px] mx-auto">
+                  Looks like you haven't added any delicious items yet.
+                </p>
+              </div>
+              <button 
+                onClick={() => navigate('/categories')}
+                className="mt-2 px-8 py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-xl font-bold text-[15px] shadow-lg shadow-orange-500/20 active:scale-95 transition-all"
+              >
+                Go to Menu
+              </button>
+            </motion.div>
           ) : (
             cart.map((item) => (
               <div key={item.cartId} className="flex items-center justify-between w-full">
@@ -140,8 +170,11 @@ const OrderList = ({ cart = [], setCart }) => {
       {cart.length > 0 && (
         <div className="absolute bottom-[110px] left-1/2 -translate-x-1/2 w-[80%] flex justify-center z-40">
            <button 
-             onClick={() => navigate('/payment')}
-             className="w-full max-w-[320px] py-4 bg-black text-white font-bold text-[18px] rounded-lg shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:opacity-90 transition-all active:scale-95"
+             onClick={() => {
+               setOrderItems([...cart]);
+               navigate('/order-success');
+             }}
+             className="w-full bg-gradient-to-br from-amber-400 to-orange-500 text-white py-4 px-6 rounded-[18px] font-bold text-[18px] shadow-[0_8px_25px_rgba(245,158,11,0.3)] hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center font-bold"
            >
             Place Order
            </button>

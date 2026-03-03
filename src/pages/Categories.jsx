@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import banner1 from "../assets/banner1.jpg";
 import banner2 from "../assets/banner2.jpg";
 import banner3 from "../assets/banner3.jpg";
-import rodeomini from "../assets/rodeomini.png";
+
 import { 
   Bell, 
   Search, 
@@ -19,17 +19,32 @@ import {
   Cake,
   Star,
   Plus,
-  ChevronDown
+  ChevronDown,
+  Utensils
 } from "lucide-react";
+import section1 from "../assets/category/section1.png";
+import section2 from "../assets/category/section2.png";
+import section3 from "../assets/category/section3.png";
+import section4 from "../assets/category/section4.png";
+import section5 from "../assets/category/section5.png";
+import section6 from "../assets/category/section6.png";
 
-// Expanded to 6 categories
+// ── Keep existing data ──
 const quickCategories = [
-  { id: 1, name: "Salads", icon: <Leaf size={20} className="text-gray-700" /> },
-  { id: 2, name: "Main Course", icon: <UtensilsCrossed size={20} className="text-gray-700" /> },
-  { id: 3, name: "Pasta", icon: <Soup size={20} className="text-gray-700" /> },
-  { id: 4, name: "Fast Food", icon: <Pizza size={20} className="text-gray-700" /> },
-  { id: 5, name: "Drinks", icon: <Coffee size={20} className="text-gray-700" /> },
-  { id: 6, name: "Desserts", icon: <Cake size={20} className="text-gray-700" /> },
+  { id: "all", name: "All", icon: <Utensils size={24} /> },
+  { id: "appetizers", name: "Appetizers", img: section1 },
+  { id: "salads", name: "Salads" , img: section2  },
+  { id: "soups", name: "Soups" , img: section3  },
+  { id: "mains", name: "Mains" , img: section4  },
+  { id: "grill", name: "Grill" , img: section5  },
+  { id: "burgers", name: "Burgers", img: section6 },
+  { id: "pizza", name: "Pizza", img: section1 },
+  { id: "traditional", name: "Traditional" , img: section2  },
+  { id: "seafood", name: "Seafood", img: section3 },
+  { id: "vegetarian", name: "Vegetarian" , img: section2  },
+  { id: "sides", name: "Sides" , img: section2 },
+  { id: "desserts", name: "Desserts", img: section6 },
+  { id: "beverages", name: "Beverages" , img: section2  },
 ];
 
 // Replaced recommended with 20 dummy items for the complete menu
@@ -65,6 +80,8 @@ const banners = [
 const Categories = ({ cart, setCart }) => {
   const navigate = useNavigate();
   const [currentBanner, setCurrentBanner] = useState(0);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -86,97 +103,161 @@ const Categories = ({ cart, setCart }) => {
   return (
     <div className="w-full min-h-screen flex flex-col pb-20 font-sans overflow-x-hidden bg-[#f8f9fa]">
       
-      {/* Search Bar (Now without red container) */}
-      <div className="px-4 pt-4 mb-6">
-        <div className="flex items-center bg-white rounded-xl px-4 py-3.5 shadow-sm border border-gray-100">
-          <Search size={20} className="text-gray-400 min-w-[20px]" />
-          <input 
-            type="text" 
-            placeholder="Search any recipes of your choice..." 
-            className="flex-1 bg-transparent outline-none px-3 text-[14px] text-gray-700 placeholder:text-gray-400" 
-          />
-          <div className="w-[1px] h-5 bg-gray-200 mx-1"></div>
-          <button className="p-1 text-[#a0351a]">
-            <SlidersHorizontal size={18} />
+      <div className="px-5 pt-4">
+        {/* Hero Banner Slider */}
+        <div className="relative h-[160px] mb-6 overflow-hidden rounded-[12px] shadow-md cursor-pointer" onClick={() => navigate('/menu')}>
+          <AnimatePresence>
+            <motion.div
+              key={currentBanner}
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="absolute inset-0"
+            >
+              <img 
+                src={banners[currentBanner].image} 
+                alt="Banner" 
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Slider Indicators */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+            {banners.map((_, index) => (
+              <div 
+                key={index} 
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  index === currentBanner ? "w-6 bg-white" : "w-1.5 bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Menu Categories Section */}
+      <div className="mb-3 px-5">
+        <div 
+          className="flex justify-between items-center mb-3 cursor-pointer"
+          onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
+        >
+          <h3 className="text-[20px] font-bold text-gray-900">Menu Categories</h3>
+          <button className="flex items-center gap-1 text-amber-500 font-semibold text-[13px]">
+            <span>{isCategoriesExpanded ? "Show Less" : "See All"}</span>
+            <motion.div
+              animate={{ rotate: isCategoriesExpanded ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ChevronDown size={16} />
+            </motion.div>
           </button>
         </div>
-      </div>
-
-      <div className="px-4">
-        {/* Rest of the content */}
-
-      {/* Hero Banner Slider */}
-      <div className="relative h-[160px] mb-6 overflow-hidden rounded-[12px]  shadow-md cursor-pointer" onClick={() => navigate('/menu')}>
-        <AnimatePresence>
-          <motion.div
-            key={currentBanner}
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute inset-0"
-          >
-            <img 
-              src={banners[currentBanner].image} 
-              alt="Banner" 
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Slider Indicators */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
-          {banners.map((_, index) => (
-            <div 
-              key={index} 
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                index === currentBanner ? "w-6 bg-white" : "w-1.5 bg-white/40"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Menu Categories Grid */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-[17px] md:text-xl font-bold text-gray-900">Menu Categories</h3>
-        </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {quickCategories.map((cat) => (
-            <div 
-              key={cat.id} 
-              onClick={() => navigate('/menu')}
-              className="bg-white rounded-[12px] p-2 md:p-2.5 flex items-center gap-3 shadow-[0_2px_10px_-6px_rgba(0,0,0,0.05)] md:hover:shadow-md cursor-pointer active:scale-95 transition-all"
+        <AnimatePresence>
+          {isCategoriesExpanded ? (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden"
             >
-              <div className="w-10 h-10 md:w-11 md:h-11 bg-gray-50 rounded-full flex items-center justify-center shrink-0">
-                {cat.icon}
+              <div className="grid grid-cols-5 gap-1 pb-2">
+                {quickCategories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setActiveCategory(cat.id);
+                      setIsCategoriesExpanded(false);
+                    }}
+                    className="flex flex-col items-center justify-center p-1 transition-all"
+                  >
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-1 transition-all ${
+                      activeCategory === cat.id ? "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.08)] border-2 border-amber-400/20" : "bg-white border border-gray-100"
+                    }`}>
+                      {cat.img ? (
+                        <img src={cat.img} alt={cat.name} className="w-10 h-10 object-contain" />
+                      ) : (
+                        <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
+                          {cat.icon}
+                        </span>
+                      )}
+                    </div>
+                    <span className={`text-[10px] font-bold text-center leading-tight ${activeCategory === cat.id ? "text-gray-900" : "text-gray-500"}`}>{cat.name}</span>
+                  </button>
+                ))}
               </div>
-              <span className="flex-1 text-[13px] md:text-[14px] font-semibold text-gray-800 truncate">
-                {cat.name}
-              </span>
-              <ChevronRight size={16} className="text-gray-300 shrink-0 md:w-5 md:h-5 md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
+            </motion.div>
+          ) : (
+            <div className="pb-2 flex gap-1.5 overflow-x-auto hide-scrollbar -mx-5 px-5">
+              {quickCategories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className="flex flex-col items-center justify-center min-w-[72px] flex-shrink-0 transition-all"
+                >
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all ${
+                    activeCategory === cat.id 
+                      ? "bg-white shadow-[0_8px_15px_rgba(0,0,0,0.08)] border-2 border-amber-400/20" 
+                      : "bg-white border border-gray-100"
+                  }`}>
+                    {cat.img ? (
+                      <img src={cat.img} alt={cat.name} className="w-11 h-11 object-contain" />
+                    ) : (
+                      <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
+                        {cat.icon}
+                      </span>
+                    )}
+                  </div>
+                  <span
+                    className={`text-[12px] font-bold whitespace-nowrap ${
+                      activeCategory === cat.id ? "text-gray-900" : "text-gray-500"
+                    }`}
+                  >
+                    {cat.name}
+                  </span>
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </AnimatePresence>
       </div>
+
+      <div className="px-5">
+
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="flex items-center bg-white rounded-xl px-4 py-3.5 shadow-sm border border-gray-100">
+            <Search size={20} className="text-gray-400 min-w-[20px]" />
+            <input 
+              type="text" 
+              placeholder="Search any recipes of your choice..." 
+              className="flex-1 bg-transparent outline-none px-3 text-[14px] text-gray-700 placeholder:text-gray-400" 
+            />
+            <div className="w-[1px] h-5 bg-gray-200 mx-1"></div>
+            <button className="p-1 text-amber-500">
+              <SlidersHorizontal size={18} />
+            </button>
+          </div>
+        </div>
 
       {/* Main Foods Section */}
-      <div className="mb-8">
+      <div className="mb-4">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-[17px] md:text-xl font-bold text-gray-900">Food and Drinks Menu</h3>
+          <h3 className="text-[20px] font-bold text-gray-900">Food and Drinks Menu</h3>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 pb-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 pb-4">
           {allFoods.map((item) => (
             <div 
               key={item.id}
               onClick={() => navigate(`/food/${item.id}`)}
-              className="bg-white rounded-[20px] p-2.5 flex flex-col shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] cursor-pointer active:scale-[0.98] transition-all"
+              className="bg-white rounded-[20px] p-1.5 flex flex-col shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] cursor-pointer active:scale-[0.98] transition-all"
             >
               {/* Top Image Section */}
-              <div className="w-full h-[140px] rounded-[16px] overflow-hidden relative mb-3">
+              <div className="w-full h-[140px] rounded-[16px] overflow-hidden relative mb-2">
                 <img 
                   src={item.img} 
                   alt={item.name} 
@@ -200,16 +281,16 @@ const Categories = ({ cart, setCart }) => {
 
               {/* Text Info Section */}
               <div className="flex flex-col flex-1 px-1">
-                <h4 className="text-[15px] font-bold text-gray-900 mb-1 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
+                <h4 className="text-[14px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
                 
                 {/* Product Description */}
-                <p className="text-[11px] text-gray-400 font-medium mb-4 line-clamp-1">{item.desc}</p>
+                <p className="text-[11px] text-gray-400 font-medium mb-2 line-clamp-1">{item.desc}</p>
                 
                 {/* Bottom Row: Price & Time Badge (Replacing Share Icon) */}
                 <div className="mt-auto flex justify-between items-center">
                   <button 
                     onClick={(e) => handleQuickAdd(e, item)}
-                    className="bg-[#22c55e] text-white text-[13px] font-bold px-3 py-1.5 rounded-[8px] tracking-wide relative overflow-hidden group"
+                    className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-[13px] font-bold px-3 py-1.5 rounded-[8px] tracking-wide relative overflow-hidden group shadow-[0_4px_12px_rgba(245,158,11,0.3)]"
                   >
                     <span className="relative z-10">{item.price} <span className="text-[10px] ml-0.5">ETB</span></span>
                     <div className="absolute inset-0 bg-black/10 translate-y-full group-active:translate-y-0 transition-transform"></div>
@@ -229,9 +310,23 @@ const Categories = ({ cart, setCart }) => {
           ))}
         </div>
       </div>
+      {/* ===== Hide Scrollbar CSS ===== */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `,
+        }}
+      />
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default Categories;

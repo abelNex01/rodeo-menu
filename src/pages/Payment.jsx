@@ -10,6 +10,8 @@ import CBELogo from "../assets/payment/CommercialBankofEthiopia.svg";
 import AwashLogo from "../assets/payment/AwashInternationalBank.svg";
 import CoopLogo from "../assets/payment/CooperativeBankofOromia.svg";
 import AbyssiniaLogo from "../assets/payment/BankOfAbyssinia.svg";
+import RodeoLogo from "../assets/rodeo.png";
+
 
 // ── 5 Ethiopian Banks ──
 const banks = [
@@ -150,7 +152,7 @@ const Payment = ({ cart = [] }) => {
   };
 
   return (
-    <div className="w-full h-full bg-[#f2f2f7] flex flex-col font-sans relative overflow-hidden">
+    <div className="w-full h-full bg-[#f8f9fa] flex flex-col font-sans relative overflow-hidden">
       
       {/* 🧾 Hidden Receipt Template for Image Export */}
       <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
@@ -438,7 +440,7 @@ const Payment = ({ cart = [] }) => {
                 <span className="text-[20px]">�</span>
               </div>
               <div className="flex-1 flex flex-col">
-                <span className="text-[15px] font-bold text-black">
+                <span className="text-[20px] font-bold text-black">
                   Tip Our Team
                 </span>
                 <span className="text-[13px] text-gray-400">
@@ -526,10 +528,11 @@ const Payment = ({ cart = [] }) => {
             </span>
           </div>
 
-          {/* Order Items */}
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-gray-400 gap-2">
-              <span className="text-[32px]">🍽️</span>
+              <img src={RodeoLogo} alt="Rodeo" className="w-32 h-32 object-contain opacity-20" />
+
+
               <p className="font-bold text-[14px]">Your order is empty</p>
               <button
                 onClick={() => navigate("/categories")}

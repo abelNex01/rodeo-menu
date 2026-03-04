@@ -1,50 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import banner1 from "../assets/banner1.jpg";
-import banner2 from "../assets/banner2.jpg";
-import banner3 from "../assets/banner3.jpg";
+import banner1 from "../assets/banner1.webp";
+import banner2 from "../assets/banner2.webp";
+import banner3 from "../assets/banner3.webp";
 
 import { 
-  Bell, 
   Search, 
   SlidersHorizontal, 
-  ChevronRight, 
-  Bookmark,
-  Leaf,
-  UtensilsCrossed,
-  Soup,
-  Pizza,
-  Coffee,
-  Cake,
   Star,
   Plus,
   ChevronDown,
-  Utensils
+  Utensils,
 } from "lucide-react";
-import section1 from "../assets/category/section1.png";
-import section2 from "../assets/category/section2.png";
-import section3 from "../assets/category/section3.png";
-import section4 from "../assets/category/section4.png";
-import section5 from "../assets/category/section5.png";
-import section6 from "../assets/category/section6.png";
+import section1 from "../assets/category/1.png";
+import section2 from "../assets/category/2.png";
+import section3 from "../assets/category/3.png";
+import section4 from "../assets/category/4.png";
+import section5 from "../assets/category/5.png";
+import section6 from "../assets/category/6.png";
+import section7 from "../assets/category/7.png";
+import section8 from "../assets/category/8.png";
+import section9 from "../assets/category/9.png";
+
+
 
 // ── Keep existing data ──
 const quickCategories = [
   { id: "all", name: "All", icon: <Utensils size={24} /> },
-  { id: "appetizers", name: "Appetizers", img: section1 },
-  { id: "salads", name: "Salads" , img: section2  },
-  { id: "soups", name: "Soups" , img: section3  },
   { id: "mains", name: "Mains" , img: section4  },
-  { id: "grill", name: "Grill" , img: section5  },
   { id: "burgers", name: "Burgers", img: section6 },
   { id: "pizza", name: "Pizza", img: section1 },
-  { id: "traditional", name: "Traditional" , img: section2  },
-  { id: "seafood", name: "Seafood", img: section3 },
-  { id: "vegetarian", name: "Vegetarian" , img: section2  },
+  { id: "traditional", name: "Traditional" , img: section7  },
+  { id: "beverages", name: "Beverages" , img: section5  },
+  { id: "cocktails", name: "Cocktails", img: section9 },
+  { id: "seafood", name: "Seafood", img: section8 },
+  { id: "salads", name: "Salads" , img: section2  },
+  { id: "soups", name: "Soups" , img: section3  },
+  { id: "grill", name: "Grill" , img: section5  },
   { id: "sides", name: "Sides" , img: section2 },
   { id: "desserts", name: "Desserts", img: section6 },
-  { id: "beverages", name: "Beverages" , img: section2  },
+
 ];
 
 // Replaced recommended with 20 dummy items for the complete menu

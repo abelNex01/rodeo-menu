@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-import banner1 from "../assets/banner1.jpg";
-import banner2 from "../assets/banner2.jpg";
-import banner3 from "../assets/banner3.jpg";
+import banner1 from "../assets/banner1.webp";
+import banner2 from "../assets/banner2.webp";
+import banner3 from "../assets/banner3.webp";
 
 import { 
   Search, 
@@ -13,31 +13,35 @@ import {
   Plus, 
   ChevronDown, 
   Utensils,
+  Martini,
   ArrowRight
 } from "lucide-react";
-import section1 from "../assets/category/section1.png";
-import section2 from "../assets/category/section2.png";
-import section3 from "../assets/category/section3.png";
-import section4 from "../assets/category/section4.png";
-import section5 from "../assets/category/section5.png";
-import section6 from "../assets/category/section6.png";
+import section1 from "../assets/category/1.png";
+import section2 from "../assets/category/2.png";
+import section3 from "../assets/category/3.png";
+import section4 from "../assets/category/4.png";
+import section5 from "../assets/category/5.png";
+import section6 from "../assets/category/6.png";
+import section7 from "../assets/category/7.png";
+import section8 from "../assets/category/8.png";
+import section9 from "../assets/category/9.png";
+
 
 // ── Keep existing data ──
 const quickCategories = [
   { id: "all", name: "All", icon: <Utensils size={24} /> },
-  { id: "appetizers", name: "Appetizers", img: section1 },
-  { id: "salads", name: "Salads" , img: section2  },
-  { id: "soups", name: "Soups" , img: section3  },
   { id: "mains", name: "Mains" , img: section4  },
-  { id: "grill", name: "Grill" , img: section5  },
   { id: "burgers", name: "Burgers", img: section6 },
   { id: "pizza", name: "Pizza", img: section1 },
-  { id: "traditional", name: "Traditional" , img: section2  },
-  { id: "seafood", name: "Seafood", img: section3 },
-  { id: "vegetarian", name: "Vegetarian" , img: section2  },
+  { id: "traditional", name: "Traditional" , img: section7  },
+   { id: "beverages", name: "Beverages" , img: section5  },
+    { id: "seafood", name: "Seafood", img: section8 },
+  { id: "salads", name: "Salads" , img: section2  },
+  { id: "soups", name: "Soups" , img: section3  },
+  { id: "grill", name: "Grill" , img: section5  },
   { id: "sides", name: "Sides" , img: section2 },
   { id: "desserts", name: "Desserts", img: section6 },
-  { id: "beverages", name: "Beverages" , img: section2  },
+  { id: "cocktails", name: "Cocktails", img: section9 },
 ];
 
 const banners = [
@@ -274,7 +278,7 @@ const Specials = ({ setCart }) => {
         </div>
 
       {/* ===== Top Rated Section ===== */}
-      <div className="mb-8">
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-[20px] font-bold text-gray-900">
             Top rated specials
@@ -290,15 +294,15 @@ const Specials = ({ setCart }) => {
           </button>
         </div>
 
-        <div className={showAllTop ? "grid grid-cols-2 gap-3 pb-4" : "flex overflow-x-auto hide-scrollbar gap-3 pb-4 -mx-5 px-5"}>
+        <div className={showAllTop ? "flex flex-col gap-4 pb-2" : "flex overflow-x-auto hide-scrollbar gap-4 pb-3 -mx-5 px-5"}>
           {topRated.map((item) => (
             <div 
               key={item.id}
               onClick={() => navigate(`/food/${item.id}`)}
-              className={`bg-white rounded-[20px] p-1.5 flex flex-col shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] cursor-pointer active:scale-[0.98] transition-all flex-shrink-0 ${!showAllTop ? 'w-[180px]' : ''}`}
+              className={`bg-white rounded-[24px] p-2 flex flex-col shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer active:scale-[0.99] transition-all ${showAllTop ? 'w-full' : 'w-[310px] flex-shrink-0'}`}
             >
               {/* Top Image Section */}
-              <div className="w-full h-[140px] rounded-[16px] overflow-hidden relative mb-2">
+              <div className="w-full h-[220px] rounded-[20px] overflow-hidden relative mb-3">
                 <img 
                   src={item.img} 
                   alt={item.name} 
@@ -306,9 +310,9 @@ const Specials = ({ setCart }) => {
                 />
                 
                 {/* Rating Badge (Top Left) */}
-                <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                  <Star size={11} className="text-[#facc15] fill-[#facc15]" />
-                  <span className="text-[11px] font-bold text-gray-800">{item.review}</span>
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                  <Star size={14} className="text-[#facc15] fill-[#facc15]" />
+                  <span className="text-[14px] font-bold text-gray-800">{item.review}</span>
                 </div>
 
                 {/* Plus Icon (Top Right) */}
@@ -322,8 +326,8 @@ const Specials = ({ setCart }) => {
 
               {/* Text Info Section */}
               <div className="flex flex-col flex-1 px-1">
-                <h4 className="text-[14px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
-                <p className="text-[11px] text-gray-400 font-medium mb-2 line-clamp-1">{item.desc}</p>
+                <h4 className="text-[17px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
+                <p className="text-[13px] text-gray-400 font-medium mb-3 line-clamp-1">{item.desc}</p>
                 
                 {/* Bottom Row */}
                 <div className="mt-auto flex justify-between items-center">
@@ -334,12 +338,12 @@ const Specials = ({ setCart }) => {
                     <span className="relative z-10">{item.price} <span className="text-[10px] ml-0.5">ETB</span></span>
                   </button>
                   
-                  <div className="bg-gray-50 border border-gray-100 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <div className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span className="text-[10px] font-bold text-gray-800">{item.time}</span>
+                    <span className="text-[12px] font-bold text-gray-800">{item.time}</span>
                   </div>
                 </div>
               </div>
@@ -349,7 +353,7 @@ const Specials = ({ setCart }) => {
       </div>
 
       {/* ===== Suggested Section ===== */}
-      <div className="mb-8">
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-[20px] font-bold text-gray-900">
             Suggested specials
@@ -365,15 +369,15 @@ const Specials = ({ setCart }) => {
           </button>
         </div>
 
-        <div className={showAllSuggested ? "grid grid-cols-2 gap-3 pb-4" : "flex overflow-x-auto hide-scrollbar gap-3 pb-4 -mx-5 px-5"}>
+        <div className={showAllSuggested ? "flex flex-col gap-4 pb-2" : "flex overflow-x-auto hide-scrollbar gap-4 pb-3 -mx-5 px-5"}>
           {suggested.map((item) => (
             <div 
               key={item.id}
               onClick={() => navigate(`/food/${item.id}`)}
-              className={`bg-white rounded-[20px] p-1.5 flex flex-col shadow-[0_4px_20px_-10px_rgba(0,0,0,0.08)] cursor-pointer active:scale-[0.98] transition-all flex-shrink-0 ${!showAllSuggested ? 'w-[180px]' : ''}`}
+              className={`bg-white rounded-[24px] p-2 flex flex-col shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer active:scale-[0.99] transition-all ${showAllSuggested ? 'w-full' : 'w-[310px] flex-shrink-0'}`}
             >
               {/* Top Image Section */}
-              <div className="w-full h-[140px] rounded-[16px] overflow-hidden relative mb-2">
+              <div className="w-full h-[220px] rounded-[20px] overflow-hidden relative mb-3">
                 <img 
                   src={item.img} 
                   alt={item.name} 
@@ -381,9 +385,9 @@ const Specials = ({ setCart }) => {
                 />
                 
                 {/* Rating Badge (Top Left) */}
-                <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                  <Star size={11} className="text-[#facc15] fill-[#facc15]" />
-                  <span className="text-[11px] font-bold text-gray-800">{item.review}</span>
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                  <Star size={14} className="text-[#facc15] fill-[#facc15]" />
+                  <span className="text-[14px] font-bold text-gray-800">{item.review}</span>
                 </div>
 
                 {/* Plus Icon (Top Right) */}
@@ -397,8 +401,8 @@ const Specials = ({ setCart }) => {
 
               {/* Text Info Section */}
               <div className="flex flex-col flex-1 px-1">
-                <h4 className="text-[14px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
-                <p className="text-[11px] text-gray-400 font-medium mb-2 line-clamp-1">{item.desc}</p>
+                <h4 className="text-[17px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
+                <p className="text-[13px] text-gray-400 font-medium mb-3 line-clamp-1">{item.desc}</p>
                 
                 {/* Bottom Row */}
                 <div className="mt-auto flex justify-between items-center">
@@ -410,11 +414,11 @@ const Specials = ({ setCart }) => {
                   </button>
                   
                   <div className="bg-gray-50 border border-gray-100 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span className="text-[10px] font-bold text-gray-800">{item.time}</span>
+                    <span className="text-[12px] font-bold text-gray-800">{item.time}</span>
                   </div>
                 </div>
               </div>

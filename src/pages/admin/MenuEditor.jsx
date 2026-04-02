@@ -116,7 +116,7 @@ export default function MenuEditor() {
         {/* Price + Category row */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="item-price" className="block text-sm font-medium text-gray-600 mb-2">Price ($)</label>
+            <label htmlFor="item-price" className="block text-sm font-medium text-gray-600 mb-2">Price (ETB)</label>
             <input
               id="item-price"
               type="number"

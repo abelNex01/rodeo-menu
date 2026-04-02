@@ -1,0 +1,10 @@
+
+> rodeo-restaurant-frontend@1.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+Browserslist: browsers data (caniuse-lite) is 18 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Terminate batch job (Y/N)? Terminate batch job (Y/N)? 

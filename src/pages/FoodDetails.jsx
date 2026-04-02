@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, ShoppingBag, Minus, Plus, Star, Watch } from "lucide-react";
-import { allFoods } from "../data/menuData";
+import { useMenu } from "../context/AppContext";
 import { createCartItem } from "../utils/cartHelpers";
 
 const FoodDetails = ({ cart, setCart, setOrderItems }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { menuItems, categories } = useMenu();
   const [food, setFood] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [userRating, setUserRating] = useState(0);
 
   useEffect(() => {
-    const foundFood = allFoods.find(f => f.id === parseInt(id));
-    if (foundFood) {
-      setFood(foundFood);
-    } else {
-      // Fallback if food not found
+    const item = menuItems.find(f => f.id === id);
+    if (item) {
+      const category = categories.find(c => c.id === item.category_id);
+      setFood({
+        ...item,
+        id: item.id,
+        name: item.name,
+        desc: item.description,
+        price: item.price,
+        img: item.image_url,
+        review: item.rating,
+        time: `${item.preparation_time} min`,
+        category: category ? category.name : 'Food'
+      });
+    } else if (menuItems.length > 0) {
+      // If we have items but this id isn't one of them
       navigate('/categories');
     }
-  }, [id, navigate]);
+  }, [id, menuItems, categories, navigate]);
 
   if (!food) return null;
 

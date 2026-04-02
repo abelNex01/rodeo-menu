@@ -1,24 +1,98 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
   SlidersHorizontal, 
-  Star, 
   Plus, 
   ChevronDown, 
-  Utensils,
-  ArrowRight
+  ArrowRight,
+  Flame, Martini, Star, Leaf, Soup, UtensilsCrossed, 
+  Beef, Drumstick, Fish, Sandwich, Pizza as PizzaIcon, 
+  CookingPot, IceCream, Coffee, Apple, CupSoda, Beer as BeerIcon, 
+  Wine as WineIcon, Globe, Utensils, Sparkles
 } from "lucide-react";
-import { quickCategories, topRated, suggested, banners } from "../data/menuData";
+
+import { useMenu } from "../context/AppContext";
 import useCategoryFilter from "../hooks/useCategoryFilter";
 import { createCartItem } from "../utils/cartHelpers";
 
+// Icon mapping (Keep in sync with Categories.jsx)
+const CATEGORY_ICONS = {
+  'shooters': Flame,
+  'long-cocktails': Martini,
+  'special-menu': Star,
+  'salads': Leaf,
+  'soups': Soup,
+  'pasta': UtensilsCrossed,
+  'rice-dishes': UtensilsCrossed,
+  'beef-dishes': Beef,
+  'chicken-dishes': Drumstick,
+  'lamb-dishes': Beef,
+  'fish-dishes': Fish,
+  'sandwiches': Sandwich,
+  'burgers': UtensilsCrossed,
+  'pizza': PizzaIcon,
+  'traditional-food': CookingPot,
+  'desserts': IceCream,
+  'day-special-menu': Sparkles,
+  'day-special-traditional-food': CookingPot,
+  'hot-drinks': Coffee,
+  'juices': Apple,
+  'cold-drinks': CupSoda,
+  'beer': BeerIcon,
+  'wine': WineIcon,
+  'imported-wine': Globe,
+  'local-wine-big': WineIcon,
+  'cognac': Martini,
+  'liquor': Martini,
+  'premium-whisky': Flame,
+  'regular-whisky': Flame,
+  'spirits': Flame,
+  'all': Utensils
+};
+
 const Specials = ({ setCart }) => {
   const navigate = useNavigate();
+  const { menuItems, categories } = useMenu();
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
   const [showAllTop, setShowAllTop] = useState(false);
   const [showAllSuggested, setShowAllSuggested] = useState(false);
+
+  // Map Supabase items to UI format
+  const allFoods = useMemo(() => {
+    return menuItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      desc: item.description,
+      price: item.price,
+      img: item.image_url,
+      review: item.rating,
+      time: `${item.preparation_time} min`,
+      category: item.category_id,
+      available: item.available
+    }));
+  }, [menuItems]);
+
+  const quickCategories = useMemo(() => {
+    const list = categories.map(cat => ({
+      id: cat.id,
+      name: cat.name,
+      img: cat.image_url,
+      Icon: CATEGORY_ICONS[cat.id] || Utensils
+    }));
+    return [{ id: 'all', name: 'All', Icon: Utensils }, ...list];
+  }, [categories]);
+
+  // Define Top Rated and Suggested dynamically from the imported menu
+  const topRatedItems = useMemo(() => {
+    return allFoods.filter(f => f.review >= 4.7).slice(0, 10);
+  }, [allFoods]);
+
+  const suggestedItems = useMemo(() => {
+    // Just a random selection for suggested, or based on specific categories
+    return allFoods.filter(f => f.review >= 4.5 && f.review < 4.7).slice(0, 10);
+  }, [allFoods]);
 
   // Reuse the category filter hook for top-rated items (search + category)
   const {
@@ -42,8 +116,8 @@ const Specials = ({ setCart }) => {
     });
   };
 
-  const filteredTopRated = filterItems(topRated);
-  const filteredSuggested = filterItems(suggested);
+  const filteredTopRated = filterItems(topRatedItems);
+  const filteredSuggested = filterItems(suggestedItems);
 
   return (
     <div className="w-full min-h-screen flex flex-col pb-20 font-sans overflow-x-hidden bg-[#f8f9fa]">
@@ -93,7 +167,7 @@ const Specials = ({ setCart }) => {
                           <img src={cat.img} alt={cat.name} className="w-10 h-10 object-contain" />
                         ) : (
                           <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
-                            <Utensils size={24} />
+                            <cat.Icon size={24} />
                           </span>
                         )}
                       </div>
@@ -119,7 +193,7 @@ const Specials = ({ setCart }) => {
                         <img src={cat.img} alt={cat.name} className="w-11 h-11 object-contain" />
                       ) : (
                         <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
-                           <Utensils size={24} />
+                           <cat.Icon size={24} />
                         </span>
                       )}
                     </div>

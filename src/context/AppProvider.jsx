@@ -2,6 +2,7 @@ import { useReducer, useState, useCallback, useMemo, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { authService } from '../services/authService';
 import { menuApi } from '../services/menuService';
+import { categoryApi } from '../services/categoryService';
 import { orderApi } from '../services/orderService';
 import {
   AuthContext,
@@ -186,34 +187,43 @@ export default function AppProvider({ children }) {
 
   // ──── Menu State ────
   const [menuItems, setMenuItems] = useState([]);
-
-  useEffect(() => {
-    menuApi.getAll().then(data => setMenuItems(data));
-    
-    const channel = supabase.channel('menu-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'menu_items' },
-        (payload) => {
-          menuApi.getAll().then(data => setMenuItems(data));
-        }
-      )
-      .subscribe();
-
-    return () => supabase.removeChannel(channel);
-  }, []);
+  const [categories, setCategories] = useState([]);
 
   const refreshMenu = useCallback(async () => {
-    setMenuItems(await menuApi.getAll());
+    const [items, cats] = await Promise.all([
+      menuApi.getAll(),
+      categoryApi.getAll()
+    ]);
+    setMenuItems(items);
+    setCategories(cats);
   }, []);
+
+  useEffect(() => {
+    refreshMenu();
+    
+    // Realtime subscriptions for both tables
+    const menuChannel = supabase.channel('menu-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'menu_items' }, () => refreshMenu())
+      .subscribe();
+
+    const catChannel = supabase.channel('category-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => refreshMenu())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(menuChannel);
+      supabase.removeChannel(catChannel);
+    };
+  }, [refreshMenu]);
 
   const menuValue = useMemo(() => ({
     menuItems,
+    categories,
     refreshMenu,
     createItem: async (item) => { const r = await menuApi.create(item); refreshMenu(); return r; },
     updateItem: async (id, u) => { const r = await menuApi.update(id, u); refreshMenu(); return r; },
     deleteItem: async (id) => { const r = await menuApi.delete(id); refreshMenu(); return r; },
-  }), [menuItems, refreshMenu]);
+  }), [menuItems, categories, refreshMenu]);
 
 
   // ──── Notifications State ────

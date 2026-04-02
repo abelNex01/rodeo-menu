@@ -4,20 +4,98 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
   SlidersHorizontal, 
-  Star,
   Plus,
   ChevronDown,
-  Utensils,
+  Flame, Martini, Star, Leaf, Soup, UtensilsCrossed, 
+  Beef, Drumstick, Fish, Sandwich, Pizza as PizzaIcon, 
+  CookingPot, IceCream, Coffee, Apple, CupSoda, Beer as BeerIcon, 
+  Wine as WineIcon, Globe, Utensils, Sparkles
 } from "lucide-react";
-import { quickCategories, allFoods, banners } from "../data/menuData";
+
+import { useMenu } from "../context/AppContext";
 import useBannerRotation from "../hooks/useBannerRotation";
 import useCategoryFilter from "../hooks/useCategoryFilter";
 import { createCartItem } from "../utils/cartHelpers";
 import { capitalize } from "../utils/formatters";
 
+// Import original banners
+import banner1 from "../assets/banner1.webp";
+import banner2 from "../assets/banner2.webp";
+import banner3 from "../assets/banner3.webp";
+
+// Icon mapping for categories
+const CATEGORY_ICONS = {
+  'shooters': Flame,
+  'long-cocktails': Martini,
+  'special-menu': Star,
+  'salads': Leaf,
+  'soups': Soup,
+  'pasta': UtensilsCrossed,
+  'rice-dishes': UtensilsCrossed,
+  'beef-dishes': Beef,
+  'chicken-dishes': Drumstick,
+  'lamb-dishes': Beef,
+  'fish-dishes': Fish,
+  'sandwiches': Sandwich,
+  'burgers': UtensilsCrossed,
+  'pizza': PizzaIcon,
+  'traditional-food': CookingPot,
+  'desserts': IceCream,
+  'day-special-menu': Sparkles,
+  'day-special-traditional-food': CookingPot,
+  'hot-drinks': Coffee,
+  'juices': Apple,
+  'cold-drinks': CupSoda,
+  'beer': BeerIcon,
+  'wine': WineIcon,
+  'imported-wine': Globe,
+  'local-wine-big': WineIcon,
+  'cognac': Martini,
+  'liquor': Martini,
+  'premium-whisky': Flame,
+  'regular-whisky': Flame,
+  'spirits': Flame,
+  'all': Utensils
+};
+
 const Categories = ({ cart, setCart }) => {
   const navigate = useNavigate();
+  const { menuItems, categories } = useMenu();
+  
+  // Restore professional banners
+  const banners = [
+    { id: 1, image: banner1 },
+    { id: 2, image: banner2 },
+    { id: 3, image: banner3 }
+  ];
+
   const currentBanner = useBannerRotation(banners.length);
+
+  // Map Supabase items to UI format
+  const allFoods = useMemo(() => {
+    return menuItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      desc: item.description,
+      price: item.price,
+      img: item.image_url,
+      review: item.rating,
+      time: `${item.preparation_time} min`,
+      category: item.category_id,
+      available: item.available
+    }));
+  }, [menuItems]);
+
+  const quickCategories = useMemo(() => {
+    const list = categories.map(cat => ({
+      id: cat.id,
+      name: cat.name,
+      img: cat.image_url,
+      Icon: CATEGORY_ICONS[cat.id] || Utensils
+    }));
+    return [{ id: 'all', name: 'All', Icon: Utensils }, ...list];
+  }, [categories]);
+
   const {
     activeCategory,
     setActiveCategory,
@@ -25,10 +103,12 @@ const Categories = ({ cart, setCart }) => {
     setSearchQuery,
     filteredItems: filteredFoods,
   } = useCategoryFilter(allFoods);
+
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
 
   const handleQuickAdd = (e, item) => {
     e.stopPropagation();
+    // Transform back to context format if needed, but AppProvider handles both id/menuId
     setCart(prev => [...(prev || []), createCartItem(item)]);
   };
 
@@ -142,7 +222,7 @@ const Categories = ({ cart, setCart }) => {
                         <img src={cat.img} alt={cat.name} className="w-10 h-10 object-contain" />
                       ) : (
                         <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
-                          <Utensils size={24} />
+                          <cat.Icon size={24} />
                         </span>
                       )}
                     </div>
@@ -168,7 +248,7 @@ const Categories = ({ cart, setCart }) => {
                       <img src={cat.img} alt={cat.name} className="w-11 h-11 object-contain" />
                     ) : (
                       <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
-                        <Utensils size={24} />
+                        <cat.Icon size={24} />
                       </span>
                     )}
                   </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, Plus, Minus, BadgePercent } from 'lucide-react';
 import { motion } from 'framer-motion';
+import useCartCalculations from '../hooks/useCartCalculations';
 
 const OrderList = ({ cart = [], setCart, setOrderItems }) => {
   const navigate = useNavigate();
@@ -20,10 +21,7 @@ const OrderList = ({ cart = [], setCart, setOrderItems }) => {
     }));
   };
 
-  const TAX_RATE = 0.15;
-  const subtotal = cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
-  const taxAmount = subtotal * TAX_RATE;
-  const total = subtotal + taxAmount;
+  const { subtotal, tax: taxAmount, total } = useCartCalculations(cart);
 
   return (
     <div className="w-full h-full bg-[#f8f9fa] flex flex-col font-sans relative overflow-hidden">

@@ -211,3 +211,43 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Admin Light Theme Scrollbar */
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: #c1c1c4;
+  border-radius: 3px;
+}
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a4;
+}
+
+/* Toast animation */
+@keyframes toast-slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes toast-slide-out {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+.animate-toast-in {
+  animation: toast-slide-in 0.3s ease-out forwards;
+}
+.animate-toast-out {
+  animation: toast-slide-out 0.3s ease-in forwards;
+}
+
+/* Hide scrollbar utility — previously inline in Categories, Specials, Payment */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

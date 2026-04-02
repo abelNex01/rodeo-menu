@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-
-import banner1 from "../assets/banner1.webp";
-import banner2 from "../assets/banner2.webp";
-import banner3 from "../assets/banner3.webp";
-
 import { 
   Search, 
   SlidersHorizontal, 
@@ -13,161 +8,42 @@ import {
   Plus, 
   ChevronDown, 
   Utensils,
-  Martini,
   ArrowRight
 } from "lucide-react";
-import section1 from "../assets/category/1.png";
-import section2 from "../assets/category/2.png";
-import section3 from "../assets/category/3.png";
-import section4 from "../assets/category/4.png";
-import section5 from "../assets/category/5.png";
-import section6 from "../assets/category/6.png";
-import section7 from "../assets/category/7.png";
-import section8 from "../assets/category/8.png";
-import section9 from "../assets/category/9.png";
-
-
-// ── Keep existing data ──
-const quickCategories = [
-  { id: "all", name: "All", icon: <Utensils size={24} /> },
-  { id: "mains", name: "Mains" , img: section4  },
-  { id: "burgers", name: "Burgers", img: section6 },
-  { id: "pizza", name: "Pizza", img: section1 },
-  { id: "traditional", name: "Traditional" , img: section7  },
-   { id: "beverages", name: "Beverages" , img: section5  },
-    { id: "seafood", name: "Seafood", img: section8 },
-  { id: "salads", name: "Salads" , img: section2  },
-  { id: "soups", name: "Soups" , img: section3  },
-  { id: "grill", name: "Grill" , img: section5  },
-  { id: "sides", name: "Sides" , img: section2 },
-  { id: "desserts", name: "Desserts", img: section6 },
-  { id: "cocktails", name: "Cocktails", img: section9 },
-];
-
-const banners = [
-  { id: 1, image: banner1 },
-  { id: 2, image: banner2 },
-  { id: 3, image: banner3 }
-];
-
-const topRated = [
-  {
-    id: 1,
-    name: "Classic Burger",
-    desc: "Juicy beef patty with cheese",
-    price: "450",
-    time: "15 min",
-    review: "4.8",
-    location: "Bole, Addis",
-    distance: "2 km away",
-    img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
-  },
-  {
-    id: 2,
-    name: "Grilled Salmon",
-    desc: "Fresh caught salmon steak",
-    price: "780",
-    time: "25 min",
-    review: "4.9",
-    location: "Kazanchis",
-    distance: "5 km away",
-    img: "https://images.unsplash.com/photo-1485921325833-c519f76c4927?w=600&h=400&fit=crop",
-  },
-  {
-    id: 3,
-    name: "Spicy Ramen",
-    desc: "Rich pork broth with noodles",
-    price: "520",
-    time: "20 min",
-    review: "4.7",
-    location: "Piazza",
-    distance: "8 km away",
-    img: "https://images.unsplash.com/photo-1552611052-33e04de081de?w=600&h=400&fit=crop",
-  },
-  {
-    id: 5,
-    name: "Margherita Pizza",
-    desc: "Wood-fired with fresh basil",
-    price: "580",
-    time: "20 min",
-    review: "4.8",
-    location: "Sarbet",
-    distance: "3 km away",
-    img: "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=600&h=400&fit=crop",
-  },
-];
-
-const suggested = [
-  {
-    id: 6,
-    name: "Steak Frites",
-    desc: "Ribeye with crispy fries",
-    price: "889",
-    time: "30 min",
-    review: "4.9",
-    location: "Mexico, Addis",
-    distance: "4 km away",
-    img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop",
-  },
-  {
-    id: 7,
-    name: "Lemon Cheesecake",
-    desc: "Creamy dessert with crust",
-    price: "320",
-    time: "5 min",
-    review: "4.6",
-    location: "CMC, Addis",
-    distance: "12 km away",
-    img: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&h=400&fit=crop",
-  },
-  {
-    id: 9,
-    name: "Tacos al Pastor",
-    desc: "Pork tacos with pineapple",
-    price: "480",
-    time: "15 min",
-    review: "4.8",
-    location: "Gerji",
-    distance: "6 km away",
-    img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
-  },
-  {
-    id: 19,
-    name: "Chicken Tikka",
-    desc: "Creamy tomato curry with naan",
-    price: "680",
-    time: "25 min",
-    review: "4.8",
-    location: "Hayat",
-    distance: "7 km away",
-    img: "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=600&h=400&fit=crop",
-  },
-];
+import { quickCategories, topRated, suggested, banners } from "../data/menuData";
+import useCategoryFilter from "../hooks/useCategoryFilter";
+import { createCartItem } from "../utils/cartHelpers";
 
 const Specials = ({ setCart }) => {
   const navigate = useNavigate();
-  const [currentBanner, setCurrentBanner] = useState(0);
-  const [activeCategory, setActiveCategory] = useState("all");
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
   const [showAllTop, setShowAllTop] = useState(false);
   const [showAllSuggested, setShowAllSuggested] = useState(false);
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+  // Reuse the category filter hook for top-rated items (search + category)
+  const {
+    activeCategory,
+    setActiveCategory,
+    searchQuery,
+    setSearchQuery,
+  } = useCategoryFilter([]);
 
   const handleQuickAdd = (e, item) => {
     e.stopPropagation();
-    const newItem = {
-      cartId: Date.now(),
-      ...item,
-      price: parseFloat(item.price)
-    };
-    setCart(prev => [...(prev || []), newItem]);
+    setCart(prev => [...(prev || []), createCartItem(item)]);
   };
+
+  const filterItems = (items) => {
+    return items.filter(item => {
+      const matchesCategory = activeCategory === "all" || item.category === activeCategory;
+      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            item.desc.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  };
+
+  const filteredTopRated = filterItems(topRated);
+  const filteredSuggested = filterItems(suggested);
 
   return (
     <div className="w-full min-h-screen flex flex-col pb-20 font-sans overflow-x-hidden bg-[#f8f9fa]">
@@ -217,7 +93,7 @@ const Specials = ({ setCart }) => {
                           <img src={cat.img} alt={cat.name} className="w-10 h-10 object-contain" />
                         ) : (
                           <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
-                            {cat.icon}
+                            <Utensils size={24} />
                           </span>
                         )}
                       </div>
@@ -243,7 +119,7 @@ const Specials = ({ setCart }) => {
                         <img src={cat.img} alt={cat.name} className="w-11 h-11 object-contain" />
                       ) : (
                         <span className={activeCategory === cat.id ? "text-amber-500" : "text-gray-400"}>
-                          {cat.icon}
+                           <Utensils size={24} />
                         </span>
                       )}
                     </div>
@@ -269,6 +145,8 @@ const Specials = ({ setCart }) => {
               type="text" 
               placeholder="Search any recipes of your choice..." 
               className="flex-1 bg-transparent outline-none px-3 text-[14px] text-gray-700 placeholder:text-gray-400" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <div className="w-[1px] h-5 bg-gray-200 mx-1"></div>
             <button className="p-1 text-amber-500">
@@ -295,8 +173,9 @@ const Specials = ({ setCart }) => {
         </div>
 
         <div className={showAllTop ? "flex flex-col gap-4 pb-2" : "flex overflow-x-auto hide-scrollbar gap-4 pb-3 -mx-5 px-5"}>
-          {topRated.map((item) => (
-            <div 
+          {filteredTopRated.map((item) => (
+            <motion.div 
+              layout
               key={item.id}
               onClick={() => navigate(`/food/${item.id}`)}
               className={`bg-white rounded-[24px] p-2 flex flex-col shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer active:scale-[0.99] transition-all ${showAllTop ? 'w-full' : 'w-[310px] flex-shrink-0'}`}
@@ -347,8 +226,13 @@ const Specials = ({ setCart }) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
+          {filteredTopRated.length === 0 && (
+            <div className="py-10 text-center text-gray-500 w-full">
+              No top rated specials found.
+            </div>
+          )}
         </div>
       </div>
 
@@ -370,8 +254,9 @@ const Specials = ({ setCart }) => {
         </div>
 
         <div className={showAllSuggested ? "flex flex-col gap-4 pb-2" : "flex overflow-x-auto hide-scrollbar gap-4 pb-3 -mx-5 px-5"}>
-          {suggested.map((item) => (
-            <div 
+          {filteredSuggested.map((item) => (
+            <motion.div 
+              layout
               key={item.id}
               onClick={() => navigate(`/food/${item.id}`)}
               className={`bg-white rounded-[24px] p-2 flex flex-col shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer active:scale-[0.99] transition-all ${showAllSuggested ? 'w-full' : 'w-[310px] flex-shrink-0'}`}
@@ -422,26 +307,16 @@ const Specials = ({ setCart }) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
+          {filteredSuggested.length === 0 && (
+            <div className="py-10 text-center text-gray-500 w-full">
+              No suggested specials found.
+            </div>
+          )}
         </div>
       </div>
     </div>
-
-      {/* ===== Hide Scrollbar CSS ===== */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `,
-        }}
-      />
     </div>
   );
 };

@@ -6,6 +6,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          400: '#ff8c1a',
+          500: '#ff7a00',
+          600: '#ff6a00',
+          700: '#e65e00',
+        },
+        dark: {
+          bg: '#121214',
+          surface: '#1f1f21',
+          card: '#2a2a2d',
+          border: '#3a3a3d',
+          hover: '#333336',
+        },
         "color-foundationgreydark-active":
           "var(--color-foundationgreydark-active)",
         "color-foundationgreylighter": "var(--color-foundationgreylighter)",

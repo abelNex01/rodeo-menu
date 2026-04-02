@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import useCartCalculations from "../hooks/useCartCalculations";
 
 // Pre-calculate confetti values to avoid strict randomness during renders
 // and create a realistic radial explosion
@@ -80,9 +81,7 @@ const receiptVariants = {
 const OrderSuccess = ({ cart = [] }) => {
   const navigate = useNavigate();
 
-  const subtotal = cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
-  const tax = subtotal * 0.15; // 15% VAT
-  const total = subtotal + tax;
+  const { subtotal, tax, total } = useCartCalculations(cart);
 
   return (
     <div className="w-full min-h-screen bg-[#f8f9fa] flex flex-col items-center pt-10 font-sans overflow-hidden px-5">

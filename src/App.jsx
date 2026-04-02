@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import Welcome from "./pages/Welcome";
 import Categories from "./pages/Categories";
 import FoodDetails from "./pages/FoodDetails";
@@ -7,52 +7,90 @@ import OrderList from "./pages/OrderList";
 import Payment from "./pages/Payment";
 import OrderSuccess from "./pages/OrderSuccess";
 import Specials from "./pages/Specials";
+import Login from "./pages/Login";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
+import RequireAuth from "./components/admin/RequireAuth";
+import useCallWaiter from "./hooks/useCallWaiter";
+import useCustomerCart from "./hooks/useCustomerCart";
+
+// Lazy-load admin routes for code-splitting
+const AdminShell = lazy(() => import("./layouts/AdminShell"));
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const MenuList = lazy(() => import("./pages/admin/MenuList"));
+const MenuEditor = lazy(() => import("./pages/admin/MenuEditor"));
+const Orders = lazy(() => import("./pages/admin/Orders"));
+const OrderDetail = lazy(() => import("./pages/admin/OrderDetail"));
+const Users = lazy(() => import("./pages/admin/Users"));
+const Analytics = lazy(() => import("./pages/admin/Analytics"));
+const Settings = lazy(() => import("./pages/admin/Settings"));
+
+// Loading fallback for lazy-loaded admin pages
+const AdminLoading = () => (
+  <div className="flex items-center justify-center h-screen bg-dark-bg">
+    <div className="w-8 h-8 border-3 border-brand-500/30 border-t-brand-500 rounded-full animate-spin" />
+  </div>
+);
 
 function App() {
-  const [cart, setCart] = useState([]);
-  const [orderItems, setOrderItems] = useState([]); // Specifically for the current order
-  const [isCalling, setIsCalling] = useState(false);
+  const { isCalling, handleCallWaiter } = useCallWaiter();
+  const { cart, setCart, orderItems, setOrderItems } = useCustomerCart();
   const location = useLocation();
 
-  console.log("App Cart State:", cart);
-  console.log("App Order Items:", orderItems);
-
-  // Sync isCalling (this is simplified, ideally you'd use a context)
-  const handleCallWaiter = () => {
-    if (isCalling) return;
-    setIsCalling(true);
-    setTimeout(() => {
-      setIsCalling(false);
-    }, 5000);
-  };
-
-  // Only show header and bottom nav if not on the welcome page
-  const showNav = location.pathname !== "/";
+  // Only show customer header/nav if not on welcome, login, or admin pages
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const isLoginRoute = location.pathname === '/login';
+  const showNav = location.pathname !== "/" && !isAdminRoute && !isLoginRoute;
 
   return (
-    <div className="w-full h-screen h-[100dvh] bg-gray-50 flex justify-center items-center overflow-hidden">
-      <div className="w-full max-w-[450px] md:max-w-[768px] h-full bg-[#f8f9fa] relative overflow-hidden shadow-2xl flex flex-col mx-auto">
-        
-        {showNav && <Header isCalling={isCalling} handleCallWaiter={handleCallWaiter} />}
-
-        <div className="flex-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/categories" element={<Categories cart={cart} setCart={setCart} />} />
-            <Route path="/menu" element={<Categories cart={cart} setCart={setCart} />} />
-            <Route path="/food/:id" element={<FoodDetails cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
-            <Route path="/orders" element={<OrderList cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
-            <Route path="/payment" element={<Payment cart={orderItems} />} />
-            <Route path="/order-success" element={<OrderSuccess cart={orderItems} setOrderItems={setOrderItems} />} />
-            <Route path="/specials" element={<Specials cart={cart} setCart={setCart} />} />
-          </Routes>
+    <>
+      {/* Customer-facing app */}
+      {!isAdminRoute && !isLoginRoute ? (
+        <div className="w-full h-screen h-[100dvh] bg-gray-50 flex justify-center items-center overflow-hidden">
+          <div className="w-full max-w-[450px] md:max-w-[768px] h-full bg-[#f8f9fa] relative overflow-hidden shadow-2xl flex flex-col mx-auto">
+            {showNav && <Header isCalling={isCalling} handleCallWaiter={handleCallWaiter} />}
+            <div className="flex-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
+              <Routes>
+                <Route path="/" element={<Welcome />} />
+                <Route path="/categories" element={<Categories cart={cart} setCart={setCart} />} />
+                <Route path="/menu" element={<Categories cart={cart} setCart={setCart} />} />
+                <Route path="/food/:id" element={<FoodDetails cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
+                <Route path="/orders" element={<OrderList cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
+                <Route path="/payment" element={<Payment cart={orderItems} />} />
+                <Route path="/order-success" element={<OrderSuccess cart={orderItems} setOrderItems={setOrderItems} />} />
+                <Route path="/specials" element={<Specials cart={cart} setCart={setCart} />} />
+              </Routes>
+            </div>
+            {showNav && <BottomNav cartCount={cart?.length || 0} isCalling={isCalling} handleCallWaiter={handleCallWaiter} />}
+          </div>
         </div>
-
-        {showNav && <BottomNav cartCount={cart?.length || 0} isCalling={isCalling} handleCallWaiter={handleCallWaiter} />}
-      </div>
-    </div>
+      ) : (
+        /* Login + Admin routes */
+        <Suspense fallback={<AdminLoading />}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/admin"
+              element={
+                <RequireAuth>
+                  <AdminShell />
+                </RequireAuth>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="menu" element={<MenuList />} />
+              <Route path="menu/new" element={<MenuEditor />} />
+              <Route path="menu/:id/edit" element={<MenuEditor />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="orders/:id" element={<OrderDetail />} />
+              <Route path="users" element={<Users />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      )}
+    </>
   );
 }
 

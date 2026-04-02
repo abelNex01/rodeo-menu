@@ -2,118 +2,29 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Copy, Check, QrCode, Download } from "lucide-react";
 import { toPng } from "html-to-image";
-
-// Bank SVG logos
-import TeleBirrLogo from "../assets/payment/TeleBirr.svg";
-import CBEBirrLogo from "../assets/payment/CBEBirr.svg";
-import CBELogo from "../assets/payment/CommercialBankofEthiopia.svg";
-import AwashLogo from "../assets/payment/AwashInternationalBank.svg";
-import CoopLogo from "../assets/payment/CooperativeBankofOromia.svg";
-import AbyssiniaLogo from "../assets/payment/BankOfAbyssinia.svg";
+import { BANKS, TIP_PRESETS, TAX_RATE } from "../constants";
+import useCartCalculations from "../hooks/useCartCalculations";
 import RodeoLogo from "../assets/rodeo.png";
-
-
-// ── 5 Ethiopian Banks ──
-const banks = [
-  {
-    id: "cbe",
-    name: "CBE",
-    logo: CBELogo,
-    accountName: "Rodeo Restaurant PLC",
-    accountNumber: "1000 0089 7734 5521",
-    gradient: "linear-gradient(135deg, #8c2d85 0%, #6b1d65 40%, #4a1048 100%)",
-    textColor: "#fff",
-    accentColor: "#e0a94c",
-    chipColor: "rgba(224,169,76,0.2)",
-  },
-  {
-    id: "telebirr",
-    name: "TeleBirr",
-    logo: TeleBirrLogo,
-    accountName: "Rodeo Restaurant PLC",
-    accountNumber: "0978 0049 6823",
-    gradient: "linear-gradient(135deg, #0172bb 0%, #024f8a 40%, #01365e 100%)",
-    textColor: "#fff",
-    accentColor: "#4dc9f6",
-    chipColor: "rgba(255,255,255,0.15)",
-  },
-  {
-    id: "abyssinia",
-    name: "Abyssinia",
-    logo: AbyssiniaLogo,
-    accountName: "Rodeo Restaurant PLC",
-    accountNumber: "1289 9934 0012",
-    gradient: "linear-gradient(135deg, #f1ab15 0%, #d99a12 50%, #b37f0f 100%)",
-    textColor: "#1a1300",
-    accentColor: "#fff2d9",
-    chipColor: "rgba(0,0,0,0.1)",
-  },
-  {
-    id: "cbebirr",
-    name: "CBE Birr",
-    logo: CBEBirrLogo,
-    accountName: "Rodeo Restaurant PLC",
-    accountNumber: "1000 3445 5678",
-    gradient: "linear-gradient(135deg, #8c2d85 0%, #6b1d65 40%, #4a1048 100%)",
-    textColor: "#fff",
-    accentColor: "#e0a94c",
-    chipColor: "rgba(224,169,76,0.2)",
-  },
-  {
-    id: "awash",
-    name: "Awash",
-    logo: AwashLogo,
-    accountName: "Rodeo Restaurant PLC",
-    accountNumber: "0911 2233 4456",
-    gradient: "linear-gradient(135deg, #c8102e 0%, #8b0a1f 40%, #5e0714 100%)",
-    textColor: "#fff",
-    accentColor: "#ff6b7a",
-    chipColor: "rgba(255,107,122,0.15)",
-  },
-  {
-    id: "coop",
-    name: "Coop",
-    logo: CoopLogo,
-    accountName: "Rodeo Restaurant PLC",
-    accountNumber: "5566 7788 9901",
-    gradient: "linear-gradient(135deg, #003d6b 0%, #00294a 40%, #001b33 100%)",
-    textColor: "#fff",
-    accentColor: "#00b4d8",
-    chipColor: "rgba(0,180,216,0.15)",
-  },
-];
-
-// Tip presets (Fixed values)
-const tipPresets = [
-  { label: "50 ETB", value: 50 },
-  { label: "100 ETB", value: 100 },
-  { label: "200 ETB", value: 200 },
-];
-
-const TAX_RATE = 0.15; // 15% VAT
 
 const Payment = ({ cart = [] }) => {
   const navigate = useNavigate();
   const receiptRef = useRef(null);
-  const [selectedBank, setSelectedBank] = useState(banks[0]);
+  const [selectedBank, setSelectedBank] = useState(BANKS[0]);
   const [copied, setCopied] = useState(false);
   const [tipValue, setTipValue] = useState(null);
   const [customTip, setCustomTip] = useState("");
   const [showCustom, setShowCustom] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // ── Cart calculations ──
-  const subtotal = cart.reduce(
-    (acc, item) => acc + item.price * (item.quantity || 1),
-    0
-  );
-  const tax = subtotal * TAX_RATE;
+  // ── Tip calculation ──
   const currentTipAmount = showCustom
     ? parseFloat(customTip) || 0
     : tipValue !== null
     ? tipValue
     : 0;
-  const total = subtotal + tax + currentTipAmount;
+
+  // ── Cart calculations (using shared hook) ──
+  const { subtotal, tax, total } = useCartCalculations(cart, currentTipAmount);
 
   // ── Copy to clipboard ──
   const handleCopy = async () => {
@@ -230,7 +141,7 @@ const Payment = ({ cart = [] }) => {
 
         {/* Bank selector row */}
         <div className="px-4 pt-4 pb-10 flex gap-3 overflow-x-auto hide-scrollbar">
-          {banks.map((bank) => (
+          {BANKS.map((bank) => (
             <button
               key={bank.id}
               onClick={() => { setSelectedBank(bank); setCopied(false); }}
@@ -437,7 +348,7 @@ const Payment = ({ cart = [] }) => {
             <div className="flex items-center gap-3 mb-3">
               {/* Tip icon */}
               <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
-                <span className="text-[20px]">�</span>
+                <span className="text-[20px]">💰</span>
               </div>
               <div className="flex-1 flex flex-col">
                 <span className="text-[20px] font-bold text-black">
@@ -456,7 +367,7 @@ const Payment = ({ cart = [] }) => {
 
             {/* Tip preset buttons */}
             <div className="flex gap-2 mb-3">
-              {tipPresets.map((preset) => (
+              {TIP_PRESETS.map((preset) => (
                 <button
                   key={preset.label}
                   onClick={() => {
@@ -618,16 +529,6 @@ const Payment = ({ cart = [] }) => {
           )}
         </div>
       </div>
-
-      {/* ── Hide Scrollbar CSS ── */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `,
-        }}
-      />
     </div>
   );
 };

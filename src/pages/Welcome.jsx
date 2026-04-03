@@ -30,7 +30,7 @@ const Welcome = () => {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-8"
+        className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-5"
       >
         <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" />

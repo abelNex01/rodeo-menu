@@ -26,7 +26,7 @@ const Header = ({ isCalling, handleCallWaiter }) => {
   const [selectedLang, setSelectedLang] = React.useState("ENG");
 
   return (
-    <div className="bg-white px-5 pt-6 pb-4 shadow-sm border-b border-gray-100 sticky top-0 z-[100]">
+    <div className="bg-white px-4 py-2 shadow-sm border-b border-gray-100 sticky top-0 z-[100]">
       {/* Top Header */}
       <div className="relative flex justify-between items-center z-50">
         
@@ -37,21 +37,21 @@ const Header = ({ isCalling, handleCallWaiter }) => {
               onClick={() => navigate("/categories")}
               className="p-1 -ml-1 text-gray-900 transition-colors"
             >
-              <ArrowLeft size={24} strokeWidth={2.5} />
+              <ArrowLeft size={20} strokeWidth={2.5} />
             </button>
           )}
           
           {isMenuPage ? (
-            <img src={rodeomini} alt="Rodeo Logo" className="h-[50px] w-auto object-contain" />
+            <img src={rodeomini} alt="Rodeo Logo" className="h-[32px] w-auto object-contain" />
           ) : (
-            <span className="text-[18px] font-bold text-gray-900">{title}</span>
+            <span className="text-[16px] font-bold text-gray-900">{title}</span>
           )}
         </div>
 
         {/* Actions (Right Side) */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Language & Alert Container */}
-          <div className="relative flex items-center justify-end h-[52px]">
+          <div className="relative flex items-center justify-end h-[40px]">
             {/* Language Selector - Fades out when calling */}
             <div className={`transition-all duration-500 ${isCalling ? "opacity-0 invisible translate-x-4" : "opacity-100 visible translate-x-0"}`}>
               <div className="flex items-center bg-gray-100/80 rounded-full p-1 border border-gray-200/50">
@@ -105,7 +105,7 @@ const Header = ({ isCalling, handleCallWaiter }) => {
           <div className="relative">
             {/* Outer Ring (Orange/Amber Gradient) */}
             <div 
-              className={`w-[52px] h-[52px] rounded-full flex items-center justify-center transition-all duration-300 ${
+              className={`w-[40px] h-[40px] rounded-full flex items-center justify-center transition-all duration-300 ${
                 isCalling 
                   ? 'bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_4px_15px_rgba(241,171,21,0.5)]' 
                   : 'bg-gradient-to-br from-amber-400 to-amber-500 shadow-[0_4px_15px_rgba(241,171,21,0.2)]'
@@ -114,25 +114,25 @@ const Header = ({ isCalling, handleCallWaiter }) => {
               {/* Ping animation when calling */}
               {isCalling && (
                 <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                  <div className="absolute w-[52px] h-[52px] rounded-full border-2 border-amber-400 animate-ping opacity-60"></div>
+                  <div className="absolute w-[40px] h-[40px] rounded-full border-2 border-amber-400 animate-ping opacity-60"></div>
                 </div>
               )}
               
               {/* Inner Button */}
               <button 
                 onClick={handleCallWaiter}
-                className={`w-[42px] h-[42px] rounded-full flex flex-col items-center justify-center transition-all duration-300 active:scale-95 z-10 ${
+                className={`w-[32px] h-[32px] rounded-full flex flex-col items-center justify-center transition-all duration-300 active:scale-95 z-10 ${
                   isCalling 
                     ? 'bg-[#1c1c1e] text-amber-400' 
                     : 'bg-[#fafafa] text-[#1c1c1e] hover:bg-white'
                 }`}
               >
                 {isCalling ? (
-                  <User size={18} className="animate-bounce" />
+                  <User size={14} className="animate-bounce" />
                 ) : (
-                  <HiBell size={18} />
+                  <HiBell size={14} />
                 )}
-                <span className={`text-[8px] font-black mt-0.5 uppercase tracking-tighter ${isCalling ? "text-amber-400" : "text-gray-600"}`}>
+                <span className={`text-[7px] font-black mt-0 uppercase tracking-tighter ${isCalling ? "text-amber-400" : "text-gray-600"}`}>
                   {isCalling ? "..." : "Call"}
                 </span>
               </button>

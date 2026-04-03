@@ -20,7 +20,7 @@ export default function AdminShell() {
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile top bar */}
-        <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b border-gray-100 shadow-sm">
+        <div className="lg:hidden flex items-center justify-between p-2 bg-white border-b border-gray-100 shadow-sm">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-gray-500 hover:text-gray-900 transition-colors"

@@ -107,6 +107,14 @@ const Categories = ({ cart, setCart }) => {
   } = useCategoryFilter(allFoods);
 
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
+  const [visibleGroupsCount, setVisibleGroupsCount] = useState(3);
+
+  // Reset pagination when category changes
+  React.useEffect(() => {
+    if (activeCategory !== 'all') {
+      setVisibleGroupsCount(3);
+    }
+  }, [activeCategory]);
 
   const handleQuickAdd = (e, item) => {
     e.stopPropagation();
@@ -297,7 +305,7 @@ const Categories = ({ cart, setCart }) => {
         </div>
         
         <div className="flex flex-col gap-10 pb-4">
-          {groupedFoods.map((group) => (
+          {groupedFoods.slice(0, activeCategory === 'all' ? visibleGroupsCount : undefined).map((group) => (
             <div key={group.id} className="flex flex-col gap-4">
               {/* Category Sub-header */}
               {activeCategory === 'all' && (
@@ -317,6 +325,17 @@ const Categories = ({ cart, setCart }) => {
             </div>
           ))}
         </div>
+
+        {activeCategory === 'all' && visibleGroupsCount < groupedFoods.length && (
+          <div className="flex justify-center mt-4 mb-10">
+            <button
+              onClick={() => setVisibleGroupsCount(prev => prev + 3)}
+              className="px-8 py-3 bg-white border border-gray-200 text-gray-900 font-bold rounded-xl shadow-sm hover:bg-gray-50 active:scale-95 transition-all text-[14px]"
+            >
+              Load More Categories
+            </button>
+          </div>
+        )}
         
         {filteredFoods.length === 0 && (
           <div className="py-10 text-center text-gray-500">

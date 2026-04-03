@@ -79,6 +79,7 @@ const OrderList = ({ cart = [], setCart, setOrderItems }) => {
                     <img 
                       src={item.img} 
                       alt={item.name} 
+                      loading="lazy"
                       className="w-full h-full object-cover rounded-[14px]" 
                     />
                   </div>
@@ -172,7 +173,7 @@ const OrderList = ({ cart = [], setCart, setOrderItems }) => {
                setOrderItems([...cart]);
                navigate('/order-success');
              }}
-             className="w-full bg-gradient-to-br from-amber-400 to-orange-500 text-white py-4 px-6 rounded-[18px] font-bold text-[18px] shadow-[0_8px_25px_rgba(245,158,11,0.3)] hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center font-bold"
+             className="w-full bg-gradient-to-br from-amber-400 to-orange-500 text-white py-4 px-6 rounded-[18px] font-bold text-[18px] shadow-[0_8px_25px_rgba(245,158,11,0.3)] hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center"
            >
             Place Order
            </button>

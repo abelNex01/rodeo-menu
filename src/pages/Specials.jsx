@@ -4,14 +4,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
   SlidersHorizontal, 
-  Plus, 
-  ChevronDown, 
-  ArrowRight,
+  Plus,
+  ChevronDown,
   Flame, Martini, Star, Leaf, Soup, UtensilsCrossed, 
   Beef, Drumstick, Fish, Sandwich, Pizza as PizzaIcon, 
-  CookingPot, IceCream, Coffee, Apple, CupSoda, Beer as BeerIcon, 
-  Wine as WineIcon, Globe, Utensils, Sparkles
+  Wine as WineIcon, Globe, Utensils, Sparkles,
+  ArrowRight,
+  CookingPot, IceCream, Coffee, Apple, CupSoda, Beer as BeerIcon
 } from "lucide-react";
+
+import FoodCard from "../components/FoodCard";
 
 import { useMenu } from "../context/AppContext";
 import useCategoryFilter from "../hooks/useCategoryFilter";
@@ -248,59 +250,7 @@ const Specials = ({ setCart }) => {
 
         <div className={showAllTop ? "flex flex-col gap-4 pb-2" : "flex overflow-x-auto hide-scrollbar gap-4 pb-3 -mx-5 px-5"}>
           {filteredTopRated.map((item) => (
-            <motion.div 
-              layout
-              key={item.id}
-              onClick={() => navigate(`/food/${item.id}`)}
-              className={`bg-white rounded-[24px] p-2 flex flex-col shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer active:scale-[0.99] transition-all ${showAllTop ? 'w-full' : 'w-[310px] flex-shrink-0'}`}
-            >
-              {/* Top Image Section */}
-              <div className="w-full h-[220px] rounded-[20px] overflow-hidden relative mb-3">
-                <img 
-                  src={item.img} 
-                  alt={item.name} 
-                  className="w-full h-full object-cover" 
-                />
-                
-                {/* Rating Badge (Top Left) */}
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
-                  <Star size={14} className="text-[#facc15] fill-[#facc15]" />
-                  <span className="text-[14px] font-bold text-gray-800">{item.review}</span>
-                </div>
-
-                {/* Plus Icon (Top Right) */}
-                <button 
-                  onClick={(e) => handleQuickAdd(e, item)}
-                  className="absolute top-2 right-2 w-8 h-8 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto hover:bg-white/60 transition-colors"
-                >
-                  <Plus size={18} strokeWidth={3} className="text-white" />
-                </button>
-              </div>
-
-              {/* Text Info Section */}
-              <div className="flex flex-col flex-1 px-1">
-                <h4 className="text-[17px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
-                <p className="text-[13px] text-gray-400 font-medium mb-3 line-clamp-1">{item.desc}</p>
-                
-                {/* Bottom Row */}
-                <div className="mt-auto flex justify-between items-center">
-                  <button 
-                    onClick={(e) => handleQuickAdd(e, item)}
-                    className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-[13px] font-bold px-3 py-1.5 rounded-[8px] tracking-wide relative overflow-hidden group shadow-[0_4px_12px_rgba(245,158,11,0.3)]"
-                  >
-                    <span className="relative z-10">{item.price} <span className="text-[10px] ml-0.5">ETB</span></span>
-                  </button>
-                  
-                  <div className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span className="text-[12px] font-bold text-gray-800">{item.time}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            <FoodCard key={item.id} item={item} handleQuickAdd={handleQuickAdd} />
           ))}
           {filteredTopRated.length === 0 && (
             <div className="py-10 text-center text-gray-500 w-full">
@@ -329,59 +279,7 @@ const Specials = ({ setCart }) => {
 
         <div className={showAllSuggested ? "flex flex-col gap-4 pb-2" : "flex overflow-x-auto hide-scrollbar gap-4 pb-3 -mx-5 px-5"}>
           {filteredSuggested.map((item) => (
-            <motion.div 
-              layout
-              key={item.id}
-              onClick={() => navigate(`/food/${item.id}`)}
-              className={`bg-white rounded-[24px] p-2 flex flex-col shadow-[0_8px_25px_-10px_rgba(0,0,0,0.1)] cursor-pointer active:scale-[0.99] transition-all ${showAllSuggested ? 'w-full' : 'w-[310px] flex-shrink-0'}`}
-            >
-              {/* Top Image Section */}
-              <div className="w-full h-[220px] rounded-[20px] overflow-hidden relative mb-3">
-                <img 
-                  src={item.img} 
-                  alt={item.name} 
-                  className="w-full h-full object-cover" 
-                />
-                
-                {/* Rating Badge (Top Left) */}
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
-                  <Star size={14} className="text-[#facc15] fill-[#facc15]" />
-                  <span className="text-[14px] font-bold text-gray-800">{item.review}</span>
-                </div>
-
-                {/* Plus Icon (Top Right) */}
-                <button 
-                  onClick={(e) => handleQuickAdd(e, item)}
-                  className="absolute top-2 right-2 w-8 h-8 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto hover:bg-white/60 transition-colors"
-                >
-                  <Plus size={18} strokeWidth={3} className="text-white" />
-                </button>
-              </div>
-
-              {/* Text Info Section */}
-              <div className="flex flex-col flex-1 px-1">
-                <h4 className="text-[17px] font-bold text-gray-900 mb-0.5 leading-tight tracking-tight line-clamp-1">{item.name}</h4>
-                <p className="text-[13px] text-gray-400 font-medium mb-3 line-clamp-1">{item.desc}</p>
-                
-                {/* Bottom Row */}
-                <div className="mt-auto flex justify-between items-center">
-                  <button 
-                    onClick={(e) => handleQuickAdd(e, item)}
-                    className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-[13px] font-bold px-3 py-1.5 rounded-[8px] tracking-wide relative overflow-hidden group shadow-[0_4px_12px_rgba(245,158,11,0.3)]"
-                  >
-                    <span className="relative z-10">{item.price} <span className="text-[10px] ml-0.5">ETB</span></span>
-                  </button>
-                  
-                  <div className="bg-gray-50 border border-gray-100 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span className="text-[12px] font-bold text-gray-800">{item.time}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+             <FoodCard key={item.id} item={item} handleQuickAdd={handleQuickAdd} />
           ))}
           {filteredSuggested.length === 0 && (
             <div className="py-10 text-center text-gray-500 w-full">
@@ -390,7 +288,7 @@ const Specials = ({ setCart }) => {
           )}
         </div>
       </div>
-    </div>
+      </div>
     </div>
   );
 };

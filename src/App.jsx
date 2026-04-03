@@ -1,13 +1,14 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import Welcome from "./pages/Welcome";
-import Categories from "./pages/Categories";
-import FoodDetails from "./pages/FoodDetails";
-import OrderList from "./pages/OrderList";
-import Payment from "./pages/Payment";
-import OrderSuccess from "./pages/OrderSuccess";
-import Specials from "./pages/Specials";
-import Login from "./pages/Login";
+// Lazy loading customer routes for better performance
+const Welcome = lazy(() => import("./pages/Welcome"));
+const Categories = lazy(() => import("./pages/Categories"));
+const FoodDetails = lazy(() => import("./pages/FoodDetails"));
+const OrderList = lazy(() => import("./pages/OrderList"));
+const Payment = lazy(() => import("./pages/Payment"));
+const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
+const Specials = lazy(() => import("./pages/Specials"));
+const Login = lazy(() => import("./pages/Login"));
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
 import RequireAuth from "./components/admin/RequireAuth";
@@ -50,16 +51,22 @@ function App() {
           <div className="w-full max-w-[450px] md:max-w-[768px] h-full bg-[#f8f9fa] relative overflow-hidden shadow-2xl flex flex-col mx-auto">
             {showNav && <Header isCalling={isCalling} handleCallWaiter={handleCallWaiter} />}
             <div className="flex-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
-              <Routes>
-                <Route path="/" element={<Welcome />} />
-                <Route path="/categories" element={<Categories cart={cart} setCart={setCart} />} />
-                <Route path="/menu" element={<Categories cart={cart} setCart={setCart} />} />
-                <Route path="/food/:id" element={<FoodDetails cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
-                <Route path="/orders" element={<OrderList cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
-                <Route path="/payment" element={<Payment cart={orderItems} />} />
-                <Route path="/order-success" element={<OrderSuccess cart={orderItems} setOrderItems={setOrderItems} />} />
-                <Route path="/specials" element={<Specials cart={cart} setCart={setCart} />} />
-              </Routes>
+              <Suspense fallback={
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-amber-500 animate-spin"></div>
+                </div>
+              }>
+                <Routes>
+                  <Route path="/" element={<Welcome />} />
+                  <Route path="/categories" element={<Categories cart={cart} setCart={setCart} />} />
+                  <Route path="/menu" element={<Categories cart={cart} setCart={setCart} />} />
+                  <Route path="/food/:id" element={<FoodDetails cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
+                  <Route path="/orders" element={<OrderList cart={cart} setCart={setCart} setOrderItems={setOrderItems} />} />
+                  <Route path="/payment" element={<Payment cart={orderItems} />} />
+                  <Route path="/order-success" element={<OrderSuccess cart={orderItems} setOrderItems={setOrderItems} />} />
+                  <Route path="/specials" element={<Specials cart={cart} setCart={setCart} />} />
+                </Routes>
+              </Suspense>
             </div>
             {showNav && <BottomNav cartCount={cart?.length || 0} isCalling={isCalling} handleCallWaiter={handleCallWaiter} />}
           </div>

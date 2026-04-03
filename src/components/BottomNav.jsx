@@ -43,9 +43,9 @@ const BottomNav = ({ cartCount = 0, isCalling, handleCallWaiter }) => {
   );
 
   return (
-    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 w-[92%] max-w-[420px] z-[999]">
+    <div className="fixed bottom-1 left-1/2 -translate-x-1/2 w-[92%] max-w-[420px] z-[999]">
       {/* Dark Pill Navbar */}
-      <div className="relative bg-[#1c1c1e] rounded-[36px] h-[72px] flex items-center shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+      <div className="relative bg-[#1c1c1e] rounded-[12px] h-[65px] flex items-center shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
         {/* Left side nav items */}
         <div className="flex items-center flex-1 pl-3 pr-1">
           <NavItem
@@ -108,10 +108,7 @@ const BottomNav = ({ cartCount = 0, isCalling, handleCallWaiter }) => {
                   : "bg-[#fafafa] text-[#1c1c1e] hover:bg-white"
               }`}
             >
-              <HiBell
-                size={22}
-                className={isCalling ? "animate-bounce" : ""}
-              />
+              <HiBell size={22} className={isCalling ? "animate-bounce" : ""} />
               <span
                 className={`text-[9px] font-black mt-0.5 uppercase tracking-wider ${
                   isCalling ? "text-amber-400" : "text-gray-600"
